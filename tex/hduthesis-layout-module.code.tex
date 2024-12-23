@@ -23,7 +23,7 @@
   {
     \mode_leave_vertical:
     \hbox_to_wd:nn {#1}
-      { \exp_args:Nee \tl_map_inline:Nn {#2} { ##1 \hfil } \unskip }
+      { \exp_args:Nee \tl_map_inline:nn {#2} { ##1 \hfil } \unskip }
   }
 \cs_new_protected:Npn \__hduthesis_cover_center_box:nn #1#2
   { % by @egreg on tex.stackexchange.com
@@ -59,14 +59,10 @@
     \seq_set_split:Nee \l__hduthesis_process_array_seq { / } {#1}
     \seq_set_split:Nee \l__hduthesis_process_array_row_seq { \c_colon_str }
       { \seq_item:Nn \l__hduthesis_process_array_seq {#2} }
-    \tl_if_eq:nnTF {#3} {~}
+    \tl_if_eq:nnTF {#3} {:}
+      { \tl_gset:Ne #4 { \seq_use:Nn \l__hduthesis_process_array_row_seq {} } }
       {
-        \tl_set:Ne #4
-          { \seq_use:Nn \l__hduthesis_process_array_row_seq {} }
-      }
-      {
-        \tl_set:Ne #4
-          { \seq_item:Nn \l__hduthesis_process_array_row_seq {#3} }
+        \tl_gset:Ne #4 { \seq_item:Nn \l__hduthesis_process_array_row_seq {#3} }
       }
     \seq_clear:N \l__hduthesis_process_array_seq
     \seq_clear:N \l__hduthesis_process_array_row_seq
@@ -78,12 +74,12 @@
   }
 \keys_define:nn { hduthesis / docinfo }
   {
-    title .clist_set:N   = \l__docinfo_title_clist,
+    title .clist_set:N   = \l__docinfo_title_tl,
     department .tl_set:N = \l__docinfo_department_tl,
     major .tl_set:N      = \l__docinfo_major_tl,
     class .tl_set:N      = \l__docinfo_class_tl,
     stdntid .tl_set:N    = \l__docinfo_stdntid_tl,
-    author .clist_set:N  = \l__docinfo_author_clist,
+    author .clist_set:N  = \l__docinfo_author_tl,
     supervisor .tl_set:N = \l__docinfo_supervisor_tl,
     bibsource .tl_set:N  = \l__docinfo_bibsource_tl,
   }
@@ -95,13 +91,11 @@
   }
 \cs_set_protected_nopar:Nn \__hduthesis_docinfo_process_aux:
   {
-    \__hduthesis_process_array:NnnN \l__docinfo_title_clist {1} {~}
-      \l__docinfo_cntitle_tl
-    \__hduthesis_process_array:NnnN \l__docinfo_title_clist {2} {~}
+    \__hduthesis_process_array:NnnN \l__docinfo_title_tl {1} {:} \@title
+    \__hduthesis_process_array:NnnN \l__docinfo_title_tl {2} {:}
       \l__docinfo_entitle_tl
-    \__hduthesis_process_array:NnnN \l__docinfo_author_clist {1} {~}
-      \l__docinfo_cnauthor_tl
-    \__hduthesis_process_array:NnnN \l__docinfo_author_clist {2} {~}
+    \__hduthesis_process_array:NnnN \l__docinfo_author_tl {1} {:} \@author
+    \__hduthesis_process_array:NnnN \l__docinfo_author_tl {2} {:}
       \l__docinfo_enauthor_tl
     \__hduthesis_process_array:NnnN \l__docinfo_supervisor_tl {1} {1}
       \l__docinfo_cnrole_tl
@@ -128,6 +122,33 @@
             \addcontentsline{toc}{chapter}{参考文献}
           }
       }
+  }
+
+\cs_new_protected_nopar:Npn \__hduthesis_signature_process_aux:nnn #1#2#3
+  {
+    \clist_set:Nn \l__hduthesis_signature_process_clist {#1}
+    \seq_set_split:Nne \l__hduthesis_signature_figure_seq {/}
+      { \clist_item:Nn \l__hduthesis_signature_process_clist {#2} }
+    \int_compare:nNnTF {#3} = {0}
+      {
+        \tl_set:Ne \l__hduthesis_signature_figure_tl
+          { \seq_item:Nn \l__hduthesis_signature_figure_seq { #3 + 1 } }
+        \seq_clear:N \l__hduthesis_signature_figure_seq
+      }
+      {
+        \seq_set_split:Nne \l__hduthesis_signature_date_seq {-}
+          { \seq_item:Nn \l__hduthesis_signature_figure_seq {2} }
+        \seq_item:Nn \l__hduthesis_signature_date_seq {#3}
+        \seq_clear:N \l__hduthesis_signature_date_seq
+      }
+    \clist_clear:N \l__hduthesis_signature_process_clist
+  }
+
+\NewDocumentCommand \signature { m }
+  {
+    \leavevmode@ifvmode
+    \lower \dimexpr \f@size\p@ * 9/16
+    \hbox { \includegraphics [ height = { \fp_eval:n {2*\f@size}\p@ } ] {#1} }
   }
 
 \endinput

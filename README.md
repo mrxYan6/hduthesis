@@ -38,7 +38,7 @@ Modules of `hduThesiS` provide the following supports:
 
 - `hdu.l3doc`: Configuration for class's `l3doc` manual
 
-**Welcome to pull requests [here](https://github.com/xiamyphys/hduthesis).**
+**Welcome to pull requests [here](https://github.com/myhsia/hduthesis).**
 
 ## License
 

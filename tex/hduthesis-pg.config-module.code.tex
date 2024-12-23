@@ -24,9 +24,6 @@
     \titlepage
       \__hduthesis_enoverleaf_pg_aux:
     \endtitlepage
-    \titlepage
-      \__hduthesis_promise_pg_aux:
-    \endtitlepage
     \restoregeometry
     \pagenumbering{Roman}
     \cfoot {\small \thepage}
@@ -40,15 +37,13 @@
         { \LARGE\__hduthesis_cover_spread_box:nn {.575\linewidth} {硕士学位论文} }
       \par\vspace*{100\p@}
       \semiLarge 题 \qquad 目：
-      \__hduthesis_cover_center_box:nn { .75\linewidth }
-        { \kaishu \l__docinfo_cntitle_tl }
+      \__hduthesis_cover_center_box:nn { .75\linewidth } { \kaishu \@title }
       \vspace*{24\p@}\par
       \begin{tabular}
         { >{\semiLarge\centering\arraybackslash}p{4\ccwd}@{}
           >{\semiLarge\centering\arraybackslash\kaishu}p{.65\linewidth}@{} }
         \__hduthesis_cover_spread_box:nn { 4\ccwd } { 研究生 } &
-        \__hduthesis_cover_center_box:nn { .96\linewidth }
-          { \l__docinfo_cnauthor_tl }\\
+        \__hduthesis_cover_center_box:nn { .96\linewidth } { \@author }\\
         \__hduthesis_cover_spread_box:nn { 4\ccwd } { 专业 } &
         \__hduthesis_cover_center_box:nn { .96\linewidth }
           { \l__docinfo_major_tl }\\
@@ -74,18 +69,15 @@
         { \LARGE 杭州电子科技大学硕士学位论文 }
         \vspace*{140\p@} \par
         \begin{spacing}{1.15}
-          \huge\textsf{\l__docinfo_cntitle_tl}
+          \huge\textsf{ \@title }
         \end{spacing}
         \vspace*{128\p@} \par
         \begin{tabular}{>{\semiLarge}p{6.25\ccwd}>{\semiLarge\kaishu}l}
           \__hduthesis_cover_spread_box:nn { 4\ccwd } {研究生}：& 
-          \__hduthesis_cover_spread_box:nn { 4\ccwd }
-            { \l__docinfo_cnauthor_tl }\\[2ex]
+          \__hduthesis_cover_spread_box:nn { 4\ccwd } { \@author }\\[2ex]
           \__hduthesis_cover_spread_box:nn { 4\ccwd } {指导教师}：&
-          % \exp_args:Nne
           \__hduthesis_cover_spread_box:nn { 4\ccwd }
-            { \l__docinfo_cnsupervisor_tl } \hskip1.5em
-              \l__docinfo_cnrole_tl
+            { \l__docinfo_cnsupervisor_tl } \hskip1.5em \l__docinfo_cnrole_tl
         \end{tabular}
         \par \vspace{60\p@} \semilarge
         \textsf{\int_use:N \c_sys_year_int} \kaishu 年
@@ -121,8 +113,17 @@
       \int_use:N \c_sys_year_int
     \end{center}
   }
-
-\cs_new_protected_nopar:Nn \__hduthesis_promise_pg_aux:
+\NewDocumentCommand \commitment { O{} }
+  {
+    \cfoot {}
+    \newgeometry{margin = 2.75cm}
+    \titlepage
+      \__hduthesis_commitment_pg_aux:n {#1}
+    \endtitlepage
+    \restoregeometry
+    \cfoot {\small \thepage}
+  }
+\cs_new_protected_nopar:Npn \__hduthesis_commitment_pg_aux:n #1
   {
     \vspace*{-12\p@}
     \begin{center}
@@ -140,8 +141,21 @@
       对本文的研究做出重要贡献的个人和集体，均已在文中以明确方式标明。\par
       \noindent 申请学位论文与资料若有不实之处，本人承担一切相关责任。
       \par \vspace*{1.25\baselineskip}
-      \noindent \makebox[.45\linewidth][l]{论文作者签名：}
-      日期：\qquad 年\qquad 月\qquad 日
+      \noindent \makebox[.45\linewidth][l]
+        {
+          论文作者签名：
+          \__hduthesis_signature_process_aux:nnn {#1}{1}{0}
+          \tl_if_empty:NF \l__hduthesis_signature_figure_tl
+            {
+              \signature { \l__hduthesis_signature_figure_tl }
+              \tl_clear:N \l__hduthesis_signature_figure_tl
+            }
+        }
+      日期：
+      \makebox [ 2.5em ] [ l ]
+        { \__hduthesis_signature_process_aux:nnn {#1}{1}{1} } 年
+      \makebox [ 2em ] { \__hduthesis_signature_process_aux:nnn {#1}{1}{2} } 月
+      \makebox [ 2em ] { \__hduthesis_signature_process_aux:nnn {#1}{1}{3} } 日
       \par\vspace*{20\p@}
       \begin{center}
         \semilarge 学位论文使用授权说明
@@ -154,11 +168,41 @@
         学校有权保留送交论文的复印件，允许查阅和借阅论文；学校可以公布论文的全部或部分内容，
         可以允许采用影印、缩印或其它复制手段保存论文。（保密论文在解密后遵守此规定）
         \par \vspace*{1.25\baselineskip}
-        \noindent \makebox[.45\linewidth][l]{论文作者签名：}
-        日期：\qquad 年\qquad 月\qquad 日
+        \noindent \makebox[.45\linewidth][l]
+          {
+            论文作者签名：
+            \__hduthesis_signature_process_aux:nnn {#1}{2}{0}
+            \tl_if_empty:NF \l__hduthesis_signature_figure_tl
+              {
+                \signature { \l__hduthesis_signature_figure_tl }
+                \tl_clear:N \l__hduthesis_signature_figure_tl
+              }
+          }
+        日期：
+        \makebox [ 2.5em ] [ l ]
+          { \__hduthesis_signature_process_aux:nnn {#1}{2}{1} } 年
+        \makebox [ 2em ]
+          { \__hduthesis_signature_process_aux:nnn {#1}{2}{2} } 月
+        \makebox [ 2em ]
+          { \__hduthesis_signature_process_aux:nnn {#1}{2}{3} } 日
         \par \vspace*{\baselineskip}
-        \noindent \makebox[.45\linewidth][l]{指导教师签名：}
-        日期：\qquad 年\qquad 月\qquad 日
+        \noindent \makebox[.45\linewidth][l]
+          {
+            指导教师签名：
+            \__hduthesis_signature_process_aux:nnn {#1}{3}{0}
+            \tl_if_empty:NF \l__hduthesis_signature_figure_tl
+              {
+                \signature { \l__hduthesis_signature_figure_tl }
+                \tl_clear:N \l__hduthesis_signature_figure_tl
+              }
+          }
+        日期：
+        \makebox [ 2.5em ] [ l ]
+          { \__hduthesis_signature_process_aux:nnn {#1}{3}{1} } 年
+        \makebox [ 2em ]
+          { \__hduthesis_signature_process_aux:nnn {#1}{3}{2} } 月
+        \makebox [ 2em ]
+          { \__hduthesis_signature_process_aux:nnn {#1}{3}{3} } 日
       \end{spacing}
     \end{spacing}
   }
@@ -169,22 +213,17 @@
       {
         \tl_set:Nn \l__keywords_name_tl {Keywords:~}
         \tl_set:Nn \l__keywords_sep_tl {,~}
+        \@beginparpenalty\@lowpenalty
+        \chapter*{\normalfont\bfseries Abstract}
+        \addcontentsline{toc}{chapter}{\bfseries Abstract}
       }
     \str_if_eq:nnT {#1} {cn}
       {
         \tl_set:Nn \l__keywords_name_tl {\textsf{关键词：}}
         \tl_set:Nn \l__keywords_sep_tl {，}
-      }
-    \@beginparpenalty\@lowpenalty
-    \str_if_eq:nnT {#1} {cn}
-      {
+        \@beginparpenalty\@lowpenalty
         \chapter*{摘要}
         \addcontentsline{toc}{chapter}{摘要}
-      }
-    \str_if_eq:nnT {#1} {en}
-      {
-        \chapter*{\normalfont\bfseries Abstract}
-        \addcontentsline{toc}{chapter}{\bfseries Abstract}
       }
   }
   {

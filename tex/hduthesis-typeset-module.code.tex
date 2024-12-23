@@ -7,20 +7,24 @@
 
 \setmainfont{texgyretermes}
   [
-    Extension  = .otf,     UprightFont    = *-regular,   BoldFont = *-bold, ItalicFont = *-italic, BoldItalicFont = *-bolditalic
+    Extension  = .otf,     UprightFont    = *-regular,   BoldFont = *-bold,
+    ItalicFont = *-italic, BoldItalicFont = *-bolditalic
   ]
 \setsansfont{texgyreheros}
   [
     Extension   = .otf,      BoldItalicFont = *-bolditalic,
     UprightFont = *-regular, BoldFont       = *-bold,
-    ItalicFont  = *-italic,  scale          = .9,
+    ItalicFont  = *-italic,  Scale          = .9,
   ]
 
-\RequirePackage { amssymb, extarrows, mathtools,
-                  cancel, physics2, fixdif, derivative }
+\RequirePackage { amssymb, mathtools, cancel, fixdif, derivative }
+\file_if_exist:nTF { physics2.sty }
+  {
+    \RequirePackage{physics2}
+    \usephysicsmodule{ ab, braket, ab.legacy, op.legacy, bm-um.legacy }
+  } { \RequirePackage{bm} }
 \RequirePackage
   [ warnings-off = { mathtools-colon, mathtools-overbracket } ] {unicode-math}
-\usephysicsmodule{ ab, braket, ab.legacy, op.legacy, bm-um.legacy }
 \AtBeginDocument
   {
     \dim_set:Nn \abovedisplayskip {3pt}

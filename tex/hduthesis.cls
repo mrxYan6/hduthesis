@@ -20,14 +20,25 @@
 %%                                   hduthesis-hdu.l3doc-module.code,          *
 %%                                   hduthesis-hdu.stationery-module.code,     *
 %%                               and README.md.                                *
-%%   available at https://github.com/xiamyphys/hduthesis                       *
+%%   available at https://github.com/myhsia/hduthesis                          *
 %% *****************************************************************************
-\def\hduthesis@date{2024/11/25}
-\def\hduthesis@version{0.4.0}
+\def\hduthesis@date{2024/12/23}
+\def\hduthesis@version{0.5.0}
+\def\hduthesis@maintainerid{myhsia}
 
 \RequirePackage{etoolbox}
 \ProvidesExplClass{hduthesis} {\hduthesis@date} {\hduthesis@version}
   {LaTeX Class for Thesis at Hangzhou Dianzi University}
+
+% Module for TeX Live 2022 and (or) later
+\cs_if_exist:NF \seq_set_split:Nne
+  { \cs_generate_variant:Nn \seq_set_split:Nnn { Nne } }
+\cs_if_exist:NF \seq_set_split:Nee
+  { \cs_generate_variant:Nn \seq_set_split:Nnn { Nee } }
+\cs_if_exist:NF \tl_set:Ne
+  { \cs_generate_variant:Nn \tl_set:Nn { Ne } }
+\cs_if_exist:NF \tl_gset:Ne
+  { \cs_generate_variant:Nn \tl_gset:Nn { Ne } }
 
 \cs_new_protected:Npn \hduthesis_msg_new:nn #1#2 
   { \msg_new:nnn { hduthesis } {#1} {#2} }
@@ -81,7 +92,7 @@
     CJKmain-font .tl_set:N  = \g__hduthesis_main_CJK_font,
     CJKsans-font .tl_set:N  = \g__hduthesis_sans_CJK_font,
     CJKmono-font .tl_set:N  = \g__hduthesis_mono_CJK_font,
-    unknown .code:n         = \__hduthesis_unknown_option:n { #1 },
+    unknown .code:n         = \__hduthesis_unknown_option:n {#1},
   }
 \cs_new_protected_nopar:Npn \__hduthesis_unknown_option:n #1
   {
@@ -98,7 +109,7 @@
 
 \bool_if:NT \g__hduthesis_doc_bool
   {
-    \PassOptionsToClass{ 11pt, letterpaper } { l3doc }
+    \PassOptionsToClass { 11pt, letterpaper, kernel } { l3doc }
     \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { l3doc }
     \hduthesis_load_module:n { hdu.l3doc }
     \endinput
@@ -106,7 +117,7 @@
 
 \bool_if:NT \g__hduthesis_stationery_bool
   {
-    \PassOptionsToClass{ 12pt } { letter }
+    \PassOptionsToClass { 12pt } { letter }
     \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { letter }
     \hduthesis_load_module:n { hdu.stationery }
     \endinput
@@ -120,8 +131,8 @@
     \RequirePackage{hyperref}
     \pdfstringdefDisableCommands
       {
-        \def\cite#1{<#1>}
-        \def\hologoRobust#1{<#1>}
+        \def \cite#1 {<#1>}
+        \def \hologoRobust#1 {<#1>}
       }
     \AtBeginDocument
       { \hypersetup { hidelinks, pdfproducer = hduThesiS~by~Mingyu~Xia } }
@@ -130,7 +141,7 @@
 \RequirePackage { siunitx, circuitikz, pgfplots, listings,
                   hologo, lipsum, zhlipsum, booktabs, multicol }
 \pgfplotsset { compat = newest }
-\hologoFontSetup{general = \sffamily}
+\hologoFontSetup { general = \sffamily }
 \graphicspath
   {
     {./figure/}{./figures/}{./image/}{./images/}
@@ -146,5 +157,4 @@
   }
 
 \endinput
-
 % End of file hduthesis.cls

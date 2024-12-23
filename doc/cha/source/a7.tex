@@ -1,0 +1,35 @@
+\subsection{\file{hduthesis-hdu.stationery-module.code} 的实现}
+
+模块 \file{stationery} 的代码实现与之前类似. 不同的部分有使用钩子 \cmd{shipout} 来实现水印的添加
+
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \DeclareHookRule { shipout / background } { hduthesis / stationery }
+    { before } { pgfrcs }
+  \AddToHook { shipout / background } [ hduthesis / stationery ]
+    {
+      \bool_if:NT \g__docinfo_watermark_bool
+        {
+          \tikz [ remember~picture, overlay ]
+            \node [ opacity = .2 ] at (current~page)
+              { \includegraphics [ width = .4\linewidth ] {hdulogo} };
+        }
+    }
+\end{minted}
+
+调用 \pkg{tikzpagenodes} 宏包用于定位版心的边缘，用循环句柄 \cs{int_step_inline:nn} 与 \cs{draw} 命令来实现横线的绘制.
+
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \RequirePackage{tikzpagenodes}
+  \NewDocumentCommand \notelines {O{20}}
+    {
+      \tikz [ remember~picture, overlay ]
+        {
+          \int_step_inline:nn { #1 - 1 }
+            {
+              \draw [ hdu, very~thick, opacity = .6 ]
+                ([yshift = -##1 * (\textheight + .6in - 15.87pt ) / #1 + .3in]
+                  current~page~text~area.north~west) --++ (\linewidth, 0);
+            }
+        }
+    }
+\end{minted}

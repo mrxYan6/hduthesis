@@ -1,0 +1,231 @@
+\subsection{\file{hduthesis-layout-module.code} 的实现}
+
+提供模块 \file{layout} 文件
+\begin{minted} [ linenos, bgcolor = bg, breaklines ] {tex}
+  \hduthesis_provide_module:n {layout}
+\end{minted}
+
+调用 \pkg{geometry}、\pkg{array}、\pkg{setspace}、\pkg{fancyhdr}、\pkg{enumitem}、\pkg{cleveref} 宏包
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \RequirePackage{geometry, array, setspace, fancyhdr, enumitem, cleveref}
+\end{minted}
+
+调用并配置 \pkg{caption} 宏包
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \RequirePackage[skip = 1.75ex, labelsep = quad, font = small]{caption}
+\end{minted}
+
+清空页眉页脚，设置页面样式为 \cmd{fancy}
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \fancyhf{}
+  \pagestyle{fancy}
+\end{minted}
+
+设置页眉线宽为 \cmd{.8pt}
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \renewcommand*\headrulewidth{.8pt}
+\end{minted}
+
+设置图表编号格式为 \texttt{\meta{chapter}-\meta{figure/table}}
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \renewcommand*\thefigure {\arabic{chapter}-\arabic{figure}}
+  \renewcommand*\thetable {\arabic{chapter}-\arabic{table}}
+\end{minted}
+
+设置公式编号格式为 \texttt{\meta{chapter}-\meta{equation}}
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \renewcommand*\theequation {\arabic{chapter}-\arabic{equation}}
+\end{minted}
+
+减小图表后方与正文的间距
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \AddToHook{env/figure/after}{\vspace*{-2.3ex}}
+  \AddToHook{env/table/after}{\vskip-1.9ex}
+\end{minted}
+
+设置 \cmd{enumerate} 环境的编号格式和缩进
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \setlist[enumerate,1]
+    {
+      label = (\,\arabic*\,), itemindent = 4em, leftmargin = 0em,
+      labelsep = 1ex, topsep = 0pt, itemsep = 0pt, partopsep = 0pt,
+      parsep = 0em, listparindent = 2\ccwd
+    }
+\end{minted}
+
+设置引用格式
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \crefformat{figure}{图#2#1#3}
+  \crefformat{table}{表#2#1#3}
+\end{minted}
+
+定义命令 \cs{__hduthesis_cover_spread_box:nn} 和 \cs{__hduthesis_cover_center_box:nn}，用于生成封面中的分散与下划线居中对齐盒子.
+\footnote
+  { \color{black!10}
+    下划线居中对齐盒子的实现参考自 \href{https://tex.stackexchange.com/users/4427/egreg}{@egreg} 在
+    \href{https://tex.stackexchange.com/questions/727960/how-to-center-a-series-of-text-width-a-fixed-width-that-can-automatically-linebr}{tex.stackexchange.com} 的解答.
+  }
+
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \cs_new_protected:Npn \__hduthesis_cover_spread_box:nn #1#2
+    {
+      \mode_leave_vertical:
+      \hbox_to_wd:nn {#1}
+        { \exp_args:Nee \tl_map_inline:nn {#2} { ##1 \hfil } \unskip }
+    }
+  \cs_new_protected:Npn \__hduthesis_cover_center_box:nn #1#2
+    { % by @egreg on tex.stackexchange.com
+      \mode_leave_vertical:
+      \dim_set:Nn \l_tmpa_dim {#1}
+      \global\setbox1 = \box\voidb@x
+      \group_begin:
+      \setbox0 = \vbox
+        {
+          \dim_set:Nn \hsize {#1}\relax
+          \dim_set:Nn \parindent {0pt}
+          \skip_set:Nn \leftskip {0pt plus 1fil}
+          \skip_set:Nn \rightskip {0pt plus -1fil}
+          \skip_set:Nn \parfillskip {0pt plus 2fil}
+          #2 \par
+          \loop
+          \setbox2 = \lastbox
+          \unless\ifvoid2
+            \global\setbox1 = \vtop
+              { \hbox to\hsize{\strut\unhbox2}
+                \vskip-4pt \hrule height .5pt
+                \vskip9.6pt \unvbox1
+              }
+            \unskip\unpenalty
+          \repeat
+        }
+      \group_end:
+      \box1
+    }
+\end{minted}
+
+定义命令 \cs{__hduthesis_process_array:NnnN}，用于处理一维或二维数组. 其中一级分隔符为 \texttt{:}，二级分隔符为 \texttt{/}.
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \cs_new_protected_nopar:Npn \__hduthesis_process_array:NnnN #1#2#3#4
+    {
+      \seq_set_split:Nee \l__hduthesis_process_array_seq { / } {#1}
+      \seq_set_split:Nee \l__hduthesis_process_array_row_seq { \c_colon_str }
+        { \seq_item:Nn \l__hduthesis_process_array_seq {#2} }
+      \tl_if_eq:nnTF {#3} {:}
+        { \tl_gset:Ne #4 { \seq_use:Nn \l__hduthesis_process_array_row_seq {} } }
+        {
+          \tl_gset:Ne #4 { \seq_item:Nn \l__hduthesis_process_array_row_seq {#3} }
+        }
+      \seq_clear:N \l__hduthesis_process_array_seq
+      \seq_clear:N \l__hduthesis_process_array_row_seq
+    }
+\end{minted}
+
+将十二个 \meta{month} 的英文名称存入 \cs{g_system_month_clist} 中
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \clist_set:Nn \g_system_month_clist
+    {
+      January, February, March, April, May, June, July,
+      August, September, October, November, December
+    }
+\end{minted}
+
+定义文档信息的键
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \keys_define:nn { hduthesis / docinfo }
+    {
+      title .clist_set:N   = \l__docinfo_title_tl,
+      department .tl_set:N = \l__docinfo_department_tl,
+      major .tl_set:N      = \l__docinfo_major_tl,
+      class .tl_set:N      = \l__docinfo_class_tl,
+      stdntid .tl_set:N    = \l__docinfo_stdntid_tl,
+      author .clist_set:N  = \l__docinfo_author_tl,
+      supervisor .tl_set:N = \l__docinfo_supervisor_tl,
+      bibsource .tl_set:N  = \l__docinfo_bibsource_tl,
+    }
+\end{minted}
+
+定义用户端文档信息的输入命令
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \NewDocumentCommand \DocInfo { m }
+    {
+      \keys_set:nn { hduthesis / docinfo } {#1}
+      \__hduthesis_docinfo_process_aux:
+      \__hduthesis_docinfo_degree_if_aux:
+    }
+\end{minted}
+
+定义处理文档信息的辅助命令. 其中论文标题与作者信息为一维数组，指导教师信息为二维数组.
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \cs_set_protected_nopar:Nn \__hduthesis_docinfo_process_aux:
+    {
+      \__hduthesis_process_array:NnnN \l__docinfo_title_tl {1} {:} \@title
+      \__hduthesis_process_array:NnnN \l__docinfo_title_tl {2} {:}
+        \l__docinfo_entitle_tl
+      \__hduthesis_process_array:NnnN \l__docinfo_author_tl {1} {:} \@author
+      \__hduthesis_process_array:NnnN \l__docinfo_author_tl {2} {:}
+        \l__docinfo_enauthor_tl
+      \__hduthesis_process_array:NnnN \l__docinfo_supervisor_tl {1} {1}
+        \l__docinfo_cnrole_tl
+      \__hduthesis_process_array:NnnN \l__docinfo_supervisor_tl {1} {2}
+        \l__docinfo_cnsupervisor_tl
+      \__hduthesis_process_array:NnnN \l__docinfo_supervisor_tl {2} {1}
+        \l__docinfo_enrole_tl
+      \__hduthesis_process_array:NnnN \l__docinfo_supervisor_tl {2} {2}
+        \l__docinfo_ensupervisor_tl
+      \bool_if:NF \g__hduthesis_agreement_bool
+        { \tl_clear:N \l__docinfo_bibsource_tl }
+      \tl_if_empty:NTF \l__docinfo_bibsource_tl
+        {
+          \newcommand*\printbibliography{\chapter*{参考文献}}
+          \renewcommand*\cite[1]{\textsuperscript{[##1]}}
+        }
+        {
+          \RequirePackage[sort&compress]{gbt7714}
+          \bibliographystyle{gbt7714-numerical}
+          \dim_set:Nn \bibsep {.35ex}
+          \newcommand*\printbibliography
+            {
+              \nocite{*} \bibliography { \l__docinfo_bibsource_tl }
+              \addcontentsline{toc}{chapter}{参考文献}
+            }
+        }
+    }
+\end{minted}
+
+定义处理承诺书签名数组的辅助命令. 其中签名文件名需要展开后存入 \cs{g__hduthesis_signature_file_tl} 中.
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \cs_new_protected_nopar:Npn \__hduthesis_signature_process_aux:nnn #1#2#3
+    {
+      \clist_set:Nn \l__hduthesis_signature_process_clist {#1}
+      \seq_set_split:Nne \l__hduthesis_signature_figure_seq {/}
+        { \clist_item:Nn \l__hduthesis_signature_process_clist {#2} }
+      \int_compare:nNnTF {#3} = {0}
+        {
+          \tl_set:Ne \l__hduthesis_signature_figure_tl
+            { \seq_item:Nn \l__hduthesis_signature_figure_seq { #3 + 1 } }
+          \seq_clear:N \l__hduthesis_signature_figure_seq
+        }
+        {
+          \seq_set_split:Nne \l__hduthesis_signature_date_seq {-}
+            { \seq_item:Nn \l__hduthesis_signature_figure_seq {2} }
+          \seq_item:Nn \l__hduthesis_signature_date_seq {#3}
+          \seq_clear:N \l__hduthesis_signature_date_seq
+        }
+      \clist_clear:N \l__hduthesis_signature_process_clist
+    }
+\end{minted}
+
+定义插入签名图片的命令
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \NewDocumentCommand \signature { m }
+    {
+      \leavevmode@ifvmode
+      \lower \dimexpr \f@size\p@ * 9/16
+      \hbox { \includegraphics [ height = { \fp_eval:n {2*\f@size}\p@ } ] {#1} }
+    }
+\end{minted}
+
+结束模块 \file{hduthesis-layout-module.code} 文件
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \endinput
+\end{minted}
