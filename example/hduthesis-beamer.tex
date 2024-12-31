@@ -1,0 +1,41 @@
+\documentclass [ svgnames,aspectratio = 2013, handout ] {beamer}
+
+\usetheme{hdu}
+
+\infoset
+  {
+    title      = Research and Application of Micromagnetic Simulation Based on Landau-Lifshitz-Gilbert Equation,
+    subtitle   = hdu Undergraduate Thesis Proposal,
+    author     = SAN Chi Nan (C668668E0),
+    date       = {\today{} / Building 6, Room 321},
+    supervisor = Prof. YIP Tsz Ching,
+    % reference  = reference.bib,
+  }
+
+\begin{document}
+
+\maketitle
+
+\section{Research Methods}
+
+\begin{frame}{Landau-Lifshitz-Gilbert Equation}
+  \pause
+  Landau-Lifshitz-Gilbert (LLG) equation describes the microkinetics of magnetization in ferromagnetic materials. It combines the Landau-Lifshitz (LL) equation and the Gilbert damping term $\alpha$, which is used to simulate and understand the micro-magnetic dynamics phenomena such as the motion of magnetic domain walls and magnetization reversal.
+  \pause
+  \begin{equation}
+    \odv{\mathbf m}{t} = -\gamma \mathbf m \times \mathbf H_\text{eff} -
+    \boxed{\alpha \mathbf m \times \odv{\mathbf m}{t}}
+  \end{equation}
+  \pause
+  To process the term $\alpha \mathbf m \times \odv{\mathbf m}/{t}$,
+  we left multiply the LLG equation by $\mathbf m$ and use the identity
+  $\mathbf m \cdot \odv{\mathbf m}/{t} = 0$ to generate LL equation.
+  \pause
+  \begin{equation}
+    \odv{\mathbf m}{t} = -\frac{\gamma}{1 + \alpha^2} \mathbf m \times \mathbf H - \frac{\gamma\alpha}{1 + \alpha^2} \mathbf m \times \mathbf m \times \mathbf H
+  \end{equation}
+  \pause
+  \alert{The LLG equation is more convenient for numerical calculation, while the LL equation can introduce the dissipation term more physically.}
+\end{frame}
+
+\end{document}

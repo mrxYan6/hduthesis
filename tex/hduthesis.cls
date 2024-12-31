@@ -19,11 +19,12 @@
 %%                                   hduthesis-pg.config-module.code,          *
 %%                                   hduthesis-hdu.l3doc-module.code,          *
 %%                                   hduthesis-hdu.stationery-module.code,     *
+%%                                   beamerthemehdu.sty,                       *
 %%                               and README.md.                                *
 %%   available at https://github.com/myhsia/hduthesis                          *
 %% *****************************************************************************
-\def\hduthesis@date{2024/12/23}
-\def\hduthesis@version{0.5.0}
+\def\hduthesis@date{2024/12/31}
+\def\hduthesis@version{0.5.1}
 \def\hduthesis@maintainerid{myhsia}
 
 \RequirePackage{etoolbox}
