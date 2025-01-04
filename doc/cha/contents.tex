@@ -19,11 +19,13 @@
 
 \begin{tasks}(2)
   \task \file{typeset}：字体和公式设置.
-  \task \file{beamerthemehdu}：Beamer 主题.
+  \task \file{hdu.l3doc}：用户手册模块.
+  \addtocounter{task}{5}
   \task! \file{layout}：版面模块，用于提供封面所用到的盒子和对输入文档信息的处理.
+  \addtocounter{task}{-6}
   \task \file{bc.config}：本科学位论文配置模块.
   \task \file{pg.config}：硕士学位论文配置模块.
-  \task \file{hdu.l3doc}：用户手册模块.
+  \task \file{beamerthemehdu}：Beamer 主题.
   \task \file{hdu.stationery}：信纸模块.
 \end{tasks}
 
@@ -85,17 +87,18 @@
     .2 hduthesis-layout-module.code.
     .2 hduthesis-bc.config-module.code.
     .2 hduthesis-pg.config-module.code.
-    .2 hduthesis-hdu.l3doc-module.code.
     .2 beamerthemehdu.sty.
     .2 hduthesis-hdu.stationery-module.code.
+    % 
+    .2 hduthesis-hdu.l3doc-module.code.
     .2 hdulogo.pdf, hdutitle.pdf, hdumotto.pdf, hdubadge.pdf.
   }
 
-\subsubsection{许可证}
+\subsubsection{许可证、入门手册}
 
 \dirtree
   {%
-    .1 ./LICENSE, README.md.
+    .1 ./License, README.md.
   }
 
 \subsection{模板的妥协与僵持}

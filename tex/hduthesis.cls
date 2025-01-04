@@ -17,10 +17,10 @@
 %%                                   hduthesis-layout-module.code,             *
 %%                                   hduthesis-bc.config-module.code,          *
 %%                                   hduthesis-pg.config-module.code,          *
-%%                                   hduthesis-hdu.l3doc-module.code,          *
+%%                                   beamerthemehdu.sty,                       *
 %%                                   hduthesis-hdu.stationery-module.code,     *
 %%                                                                             *
-%%                                   beamerthemehdu.sty,                       *
+%%                                   hduthesis-hdu.l3doc-module.code,          *
 %%                               and README.md.                                *
 %%   available at https://github.com/myhsia/hduthesis                          *
 %% *****************************************************************************
@@ -108,18 +108,18 @@
   {
     !\str_if_empty_p:N \g__hduthesis_mode_tl &&
     !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { thesis } &&
-    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { l3doc } &&
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { beamer } &&
     !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { stationery } &&
     % !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { exam } &&
-    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { beamer }
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { l3doc }
   }
   { \hduthesis_msg_warning:nx { unknown mode } { \g__hduthesis_mode_tl } }
 
-\str_if_eq:eeT { \g__hduthesis_mode_tl } { l3doc }
+\str_if_eq:eeT { \g__hduthesis_mode_tl } { beamer }
   {
-    \PassOptionsToClass { 11pt, letterpaper, kernel } { l3doc }
-    \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { l3doc }
-    \hduthesis_load_module:n { hdu.l3doc }
+    \PassOptionsToClass { aspectratio = 2013 } { beamer }
+    \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { beamer }
+    \usetheme{hdu}
     \endinput
   }
 
@@ -138,21 +138,21 @@
 %     \endinput
 %   }
 
-\str_if_eq:eeT { \g__hduthesis_mode_tl } { beamer }
+\str_if_eq:eeT { \g__hduthesis_mode_tl } { l3doc }
   {
-    \PassOptionsToClass { aspectratio = 2013 } { beamer }
-    \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { beamer }
-    \usetheme{hdu}
+    \PassOptionsToClass { 11pt, letterpaper, kernel } { l3doc }
+    \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { l3doc }
+    \hduthesis_load_module:n { hdu.l3doc }
     \endinput
   }
 
 \bool_if:nT
   {
      \str_if_eq_p:ee { \g__hduthesis_mode_tl } { thesis } ||
-    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { l3doc } ||
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { beamer } ||
     !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { stationery } ||
     % !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { exam } ||
-    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { beamer }
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { l3doc }
   }
   {
     \PassOptionsToClass { a4paper, zihao = -4 } { ctexrep }
