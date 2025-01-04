@@ -1,15 +1,14 @@
-\documentclass [ svgnames,aspectratio = 2013, handout ] {beamer}
+\documentclass[ mode = beamer, handout ]{hduthesis}
 
-\usetheme{hdu}
-
-\infoset
+\usepackage[mono = false]{libertine}
+\DocInfo
   {
     title      = Research and Application of Micromagnetic Simulation Based on Landau-Lifshitz-Gilbert Equation,
     subtitle   = hdu Undergraduate Thesis Proposal,
     author     = SAN Chi Nan (C668668E0),
     date       = {\today{} / Building 6, Room 321},
     supervisor = Prof. YIP Tsz Ching,
-    % reference  = reference.bib,
+    bibsource  = reference.bib,
   }
 
 \begin{document}
@@ -37,5 +36,58 @@
   \pause
   \alert{The LLG equation is more convenient for numerical calculation, while the LL equation can introduce the dissipation term more physically.}
 \end{frame}
+
+\begin{frame}{Applications}
+  \pause
+  \begin{block}{Magnetic Memory}
+    Magnetic memory is a type of non-volatile memory that uses magnetic fields to store data. It is a type of computer memory that does not require power to maintain the information stored in the memory.
+  \end{block}
+  \pause
+  \begin{exampleblock}{Magnetic Logic}
+    Magnetic logic is a type of logic gate that uses magnetic fields to perform logical operations. It is a promising technology for future computing systems.
+  \end{exampleblock}
+  \pause
+  \begin{alertblock}{Magnetic Sensor}
+    Magnetic sensors are devices that detect magnetic fields. They are used in a wide range of applications, including automotive, industrial, and consumer electronics.
+  \end{alertblock}
+  Lorem\cite{xu2023unified},
+  Ipsum\cite{wang2023electrical},
+  dummy\cite{haug2008quantum},
+  text\cite{wang2024switching},
+  \cite{jhuria2020spin},
+  \cite{gilbert2004phenomenological},
+  \cite{foros2005magnetization},
+  \cite{chudnovskiy2008spin},
+  \cite{foros2009noise},
+  \cite{swiebodzinski2010spin},
+  \cite{brataas2008scattering},
+  \cite{brataas2011magnetization}
+\end{frame}
+
+\begin{frame}{The Nonequilibrium Green's Function Method}
+  \pause
+  The NEGF method can be used to study the quantum transport properties of nanoscale devices, such as quantum dots, nanowires, and molecular junctions. The four important Green's functions in the NEGF method are
+  \pause
+  \begin{equation}
+    \begin{cases*}
+      G^r = -i\theta(t - t') \ab<\{a_i(t), a_j^\dagger(t)\}> & Retarded Green's function\\
+      G^a = i\theta(t' - t) \ab<\{a_i(t), a_j^\dagger(t')\}> & Ahead Green's function\\
+      G^< = i\ab<\{a_j^\dagger(t'), a_i(t)\}> & Lesser Green's function\\
+      G^> = -i\ab<\{a_j^\dagger(t'), a_i(t)\}> & Greater Green's function
+    \end{cases*}
+  \end{equation}
+  \pause
+  And sometimes we need multiply anchors on the contour of time.
+  \begin{center}
+    \begin{tikzpicture}
+      \draw [->] (-3.6,0) -- (3,0) node [anchor=south] {$t$} node [anchor=north] {$+\infty$} node [at start,anchor=north] {$-\infty$};
+      \draw [densely dashed, red,thick] (-3,0.75) -- (1.5,0.75) node [at start,anchor=north] {$C_1$} arc (90:0:0.25);
+      \draw [densely dashed, green, thick] (1.75,0.5) arc (0:-90:0.25) node [at start] {$\times$} node [at start, anchor=west] {$t_1$} -- (-3.2,0.25) arc (90:270:0.25) -- (2.1,-0.25) arc (90:0:0.25);
+      \draw [densely dashed, ->, blue, thick] (2.35,-0.5) arc (0:-90:0.25) node [at start] {$\times$} node [at start,anchor=west] {$t_1'$} -- (-3,-0.75) node [anchor=south] {$C_2$};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\printbibliography
 
 \end{document}

@@ -18,7 +18,8 @@
 其中，\file{hduthesis.cls} 是模板的核心文件，实质上并不提供主要功能，只用于对全局选项的控制加载模板的各个模块. 模板的功能模块如下
 
 \begin{tasks}(2)
-  \task! \file{typeset}：排版模块，用于控制字体和公式设置.
+  \task \file{typeset}：字体和公式设置.
+  \task \file{beamerthemehdu}：Beamer 主题.
   \task! \file{layout}：版面模块，用于提供封面所用到的盒子和对输入文档信息的处理.
   \task \file{bc.config}：本科学位论文配置模块.
   \task \file{pg.config}：硕士学位论文配置模块.
@@ -37,7 +38,7 @@
 
 \begin{table}[htbp]
   \centering \renewcommand* \arraystretch {.72}
-  \begin{tabularx}{\linewidth}{*{9}{>{\footnotesize}X}}
+  \begin{tabular*}{\linewidth}{*9{@{\hspace{1ex}}>{\footnotesize}l@{\hspace{1ex}}}}
     \toprule
     \pkg{amssymb}    & \pkg{bm}         & \pkg{booktabs}  &
     \pkg{cancel}     & \pkg{circuitikz} & \pkg{cleveref}  &
@@ -45,9 +46,9 @@
     \midrule
     \pkg{hyperref}   & \pkg{listings}   & \pkg{mathtools} &
     \pkg{multicol}   & \pkg{pgfplots}   & \pkg{physics2}  &
-    \pkg{siunitx}    & \multicolumn{2}{>{\footnotesize}l}{\pkg{unicode-math}}\\
+    \pkg{siunitx}    & \multicolumn{2}{@{}>{\footnotesize}l}{\pkg{unicode-math}}\\
     \bottomrule
-  \end{tabularx}
+  \end{tabular*}
 \end{table}
 
 \subsection{文件结构}
@@ -85,6 +86,7 @@
     .2 hduthesis-bc.config-module.code.
     .2 hduthesis-pg.config-module.code.
     .2 hduthesis-hdu.l3doc-module.code.
+    .2 beamerthemehdu.sty.
     .2 hduthesis-hdu.stationery-module.code.
     .2 hdulogo.pdf, hdutitle.pdf, hdumotto.pdf, hdubadge.pdf.
   }
@@ -95,6 +97,15 @@
   {%
     .1 ./LICENSE, README.md.
   }
+
+\subsection{模板的妥协与僵持}
+
+\begin{enumerate}
+  \item 模板的章节（\cmd{chapter}、\cmd{section}、\cmd{subsection}）字体、前后间距完全按照\emph{杭电理工类毕业论文写作规范}进行设置，虽然这样的设置可能与您的审美不符，但是这是为了保证论文的格式符合学校的要求.
+  \item \emph{杭电理工类毕业论文写作规范} 中要求 \emph*{参考文献书写格式应符合GB7714-1987}，但目前 \emph{GB7714-2015 为学术界通用格式，在已有新标准情况下旧标准理应废止使用}. 所以本模板默认使用 \pkg{gbt7714} 宏包.
+  \item 根据 \hologo{TeX} 的设计特性：\emph{上一页末尾有足够的空间排版额外一行文本，但在该文本后出现的公式无法完整排版在该页时，上一页末尾的最后一行文本将联同该公式一起移至下一页}. 如果您觉得这样的排版方式不符合您的审美，可以更改数值 \cmd{penalty} 的大小来控制换页算法，但是并不推荐这么做.
+\end{enumerate}
+
 \section{模板安装}
 
 \subsection{系统要求}
@@ -106,14 +117,10 @@
   }
 本模板最低兼容发行版 \hologo{TeX} Live 2022，推荐使用 \hologo{TeX} Live 2023 或更新版本.
 \footnote
-  { 发行版 \hologo{TeX} Live 2022 中不包含 \pkg{physics2} 宏包，无法快捷输入等高括号. }
-\footnote
   {
-    发行版 \hologo{TeX} Live 2022 中通过导言区设置中文字体伪粗体和伪斜体时可能遇到报错. 详情请见 3.2 节.
-  }
-\footnote
-  {
-    根据 \emph{Plan for \hologo{TeX} Live 2025: 22feb: code freeze for final build, major bug fixes only; 1mar: final updates from CTAN, final doc tweaks.} 本模板将于 2025 年 2 月 22 日移除对 \hologo{TeX} Live 2022 的兼容，建议 \hologo{TeX} Live 2022 用户尽快升级至最新发行版.
+    发行版 \hologo{TeX} Live 2022 中：
+    1. 不包含 \pkg{physics2} 宏包.
+    2. 通过导言区设置中文字体伪粗体和伪斜体时可能遇到报错. 详情请见 3.2 节. \emph{本模板将于 2025 年 2 月 22 日前移除对 \hologo{TeX} Live 2022 的兼容.}
   }
 使用本模板生成学位论文，仅支持 \hologo{XeLaTeX} 编译；使用本模板生成信纸，支持 \hologo{pdfLaTeX} 编译.
 
@@ -127,7 +134,7 @@
   \end{verbatim}
 \end{framed}
 
-Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示符. 有些时候，您需要手动更新 \cmd{tlmgr}
+Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示符. 有些时候，您需要手动更新 \cmd{tlmgr} 才能正常使用 \cmd{tlmgr} 命令安装宏包.
 
 \begin{framed}
   \begin{verbatim}
@@ -135,8 +142,6 @@ Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示
   \end{verbatim}
 \end{framed}
 
-才能正常使用 \cmd{tlmgr} 命令安装宏包.
-如果您的 \hologo{TeX} 发行版不支持 \cmd{tlmgr}，请尽快升级您的 \hologo{TeX} 发行版.
 升级该模板，在终端（Terminal）执行以下命令即可
 
 \begin{framed}
@@ -147,7 +152,7 @@ Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示
 
 \subsection{手动安装}
 
-本模板已上传至 CTAN、GitHub 和 Gitee 平台. 可以直接从三个平台下载最新版本的 \hologo{hduthesis} 模板. 下载后，将 \file{./hduthesis/tex/} 文件夹中的所有 (runtime) 文件复制到 \file{./hduthesis/example/} 目录下，即可编译 \file{./hduthesis/example/} 文件夹中的样例.
+本模板已上传至 CTAN、GitHub 和 Gitee 平台，可直接下载最新版本的 \hologo{hduthesis} 模板. 下载后，将 \file{./hduthesis/tex/} 文件夹中的所有 (runtime) 文件复制到 \file{./hduthesis/example/} 目录下，即可编译 \file{./hduthesis/example/} 中的样例.
 
 \section{全局选项}
 
@@ -174,9 +179,7 @@ Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示
 \end{framed}
 
 如果你使用的是 \hologo{TeX} Live 2022，设置中文字体的伪粗体和伪斜体时可能会遇到报错.
-在此发行版中，最多能对两个选项中的其一赋强度值，且被赋值选项需放在未被赋值选项前.
-
-更加详细的字体设置请参考 \pkg{xeCJK} 宏包的文档.
+在此发行版中，最多能对两个选项中的其一赋强度值，且被赋值选项需放在未被赋值选项前. 更加详细的字体设置请参考 \pkg{xeCJK} 宏包的文档.
 
 \section{文档信息设置}
 
@@ -185,19 +188,17 @@ Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示
     \cs{DocInfo}\marg{keyvals}
   \end{syntax}
 
-  此命令接收键值，用于设置文档信息. 键 \keys{\cmdmac~title} 用于设置论文标题，键 \keys{\cmdmac~department} 用于设置学院，键 \keys{\cmdmac~major} 用于设置专业，键 \keys{\cmdmac~class} 用于设置班级，键 \keys{\cmdmac~stdntid} 用于设置学号，键 \keys{\cmdmac~author} 用于设置作者，键 \keys{\cmdmac~supervisor} 用于设置导师，键 \keys{\cmdmac~bibsource} 用于设置插入参考文献文件源. 命令会根据输入的学号自动判断使用者为本科生/研究生.
-
-  命令 \cs{DocInfo} 需在导言区中执行. 完成文档信息输入后，在 \verb|\begin{document}| 后执行命令 \cs{maketitle} 会调用所设置的键值自动生成 \emph*{论文封面} 和 \emph*{目录}.
+  此命令接收键值，用于设置文档信息，\emph{需在导言区中执行}. 键 \keys{\cmdmac~title} 用于设置论文标题，键 \keys{\cmdmac~department} 用于设置学院，键 \keys{\cmdmac~major} 用于设置专业，键 \keys{\cmdmac~class} 用于设置班级，键 \keys{\cmdmac~stdntid} 用于设置学号，键 \keys{\cmdmac~author} 用于设置作者，键 \keys{\cmdmac~supervisor} 用于设置导师，键 \keys{\cmdmac~bibsource} 用于设置插入参考文献文件源. 命令会根据输入的学号自动判断使用者为本科生/研究生.
 \end{function}
 
-本科生输入样例如下. 需要使用键 \keys{\cmdmac~title} 设置类型为毕业设计/毕业论文，使用斜线 (/) 分隔，如 \cmd{title = 杭州电子科技大学学位论文 \hologo{LaTeX} 模板/毕业论文}.
+本科生输入样例如下. 需要使用键 \keys{\cmdmac~title} 设置封面大标题，使用斜线 (/) 分隔.
 
 \begin{framed}
   \begin{verbatim}
     \DocInfo
       {
         title  = 杭州电子科技大学学位论文 \hologo{LaTeX} 模板/
-                 本科毕业设计, department = 理学院, major = 物理学,
+                 本科毕业设计,  department = 理学院, major = 物理学,
         bibsource  = reference, class  = 英才班, stdntid = C668668E,
         author     = 申智能,    supervisor = 教授:葉芷晴, 
       }
@@ -208,7 +209,6 @@ Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示
 
 \begin{framed}
   \begin{verbatim}
-    \documentclass { hduthesis }
     \DocInfo
       {
         title      = 杭州电子科技大学学位论文 \hologo{LaTeX} 模板/
@@ -247,15 +247,10 @@ Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示
 
 \begin{framed}
   \begin{verbatim}
-    % 本科生使用用例
-    ... \maketitle ... \commitment [ example-image-a/2024-05-31 ] ...
-    % 研究生使用用例
-    ... \maketitle ...
+    \begin{document} ... \maketitle
     \commitment
-      [
-        example-image-a/2025-05-31, example-image-a/2025-05-31,
-        example-image-b/2025-06-01
-      ]
+      [ example-image-a/2025-05-31, example-image-a/2025-05-31,
+        example-image-b/2025-06-01 ] ... \end{document}
   \end{verbatim}
 \end{framed}
 
@@ -302,14 +297,24 @@ Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示
 
 \section{附加模块}
 
-\subsection{杭州电子科技大学信纸}
+\subsection{用户手册}
 
-加载全局选项 \pkg{stationery}，并进行文档信息设置，即可生成信纸. 可用于推荐信撰写或生成笔记纸.
+本手册为 \cls{hduthesis} 加载 \pkg{l3doc} 模块后生成，此模块无需 \pkg{agreed} 选项.
+
+\begin{framed}
+  \begin{verbatim}
+    \documentclass [ mode = l3doc ] { hduthesis }
+  \end{verbatim}
+\end{framed}
+
+\subsection{杭州电子科技大学信笺}
+
+加载模块 \pkg{stationery}，并进行文档信息设置，即可生成信纸. 可用于推荐信撰写或生成笔记纸.
 此模块无需 \pkg{agreed} 选项.
 
 \begin{framed}
   \begin{verbatim}
-    \documentclass [ stationery ] { hduthesis }
+    \documentclass [ mode = stationery ] { hduthesis }
   \end{verbatim}
 \end{framed}
 
@@ -326,30 +331,46 @@ Windows 系统用户无需 \verb|sudo|，请以管理员身份运行命令提示
         date       = {23\textsuperscript{th} December, 2024},
         watermark  = true
       }
+    \begin{document} \maketitle ... \end{document}
   \end{verbatim}
 \end{framed}
 
 若要在信纸上添加笔记线，可使用命令 \cs{noteLine}\oarg{num}，其可选参数接收笔记线的数量，默认值为20. 下两页分别为生成的信纸和笔记纸样例，可在终端执行 \cmd{texdoc hduthesis-stationery} 获取此样例文件.
-
-\subsection{用户手册}
-
-本手册为 \cls{hduthesis} 加载选项 \pkg{l3doc} 后生成，此模块无需 \pkg{agreed} 选项.
-
-\begin{framed}
-  \begin{verbatim}
-    \documentclass [ l3doc ] { hduthesis }
-  \end{verbatim}
-\end{framed}
 
 \includepdf[pages = -, nup = 1x2, angle = -90, frame, linktodoc, scale = 0.96, delta = 0in .25in]
   {/Users/myhsia/Documents/GitHub/hduthesis/example/hduthesis-stationery}
 
 \subsection{Beamer 主题}
 
-本模板中存在独立的 Beamer 主题 \cls{hdu}，用于生成杭州电子科技大学风格的 Beamer 幻灯片. 由于本主题为杭州电子科技大学专属，所以该主题暂不开放更改主题色杭电蓝和Logo.
+本模板中存在独立的 Beamer 主题 \pkg{hdu}，用于生成杭州电子科技大学风格的 Beamer 幻灯片. 由于本主题为杭州电子科技大学专属，所以该主题暂不开放更改主题色杭电蓝和Logo.
+
+加载模块 \pkg{beamer}，并进行文档信息设置，即以 \pkg{hdu} 为主题制作Beamer.
+此模块无需 \pkg{agreed} 选项.
+
+\begin{framed}
+  \begin{verbatim}
+    \documentclass [ mode = beamer ] { hduthesis }
+  \end{verbatim}
+\end{framed}
+
+与学士 / 硕士学位论文文档信息设置类似，使用 \cs{DocInfo} 命令，对信件主题、发件人、邮箱、日期和水印进行设置. 此时 \cs{DocInfo} 命令接受键
+\keys{\cmdmac~title} \keys{\cmdmac~subtitle} \keys{\cmdmac~author} \keys{\cmdmac~date} \keys{\cmdmac~supervisor} \keys{\cmdmac~reference}. 下页为生成Beamer的样例.
+
+\begin{framed}
+  \begin{verbatim}
+    \DocInfo
+      {
+        title      = Research and Application of Micromagnetic Simulation
+                     Based on Landau-Lifshitz-Gilbert Equation,
+        subtitle   = hdu Undergraduate Thesis Proposal,
+        author     = SAN Chi Nan (C668668E0),
+        date       = {\today{} / Building 6, Room 321},
+        supervisor = Prof. YIP Tsz Ching,
+        bibsource  = reference.bib,
+    }
+  \end{verbatim}
+\end{framed}
 
 \begin{center}
-  \frame{\includegraphics[width = .9\linewidth, page = 1]{/Users/myhsia/Documents/GitHub/hduthesis/example/hduthesis-beamer.pdf}}
-  \par
-  \frame{\includegraphics[width = .9\linewidth, page = 2]{/Users/myhsia/Documents/GitHub/hduthesis/example/hduthesis-beamer.pdf}}
+  \includepdf[pages = -, nup = 2x4, frame, linktodoc, scale = 0.96, delta = .25in .2in]{/Users/myhsia/Documents/GitHub/hduthesis/example/hduthesis-beamer.pdf}
 \end{center}

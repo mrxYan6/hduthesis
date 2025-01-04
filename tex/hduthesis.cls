@@ -19,19 +19,19 @@
 %%                                   hduthesis-pg.config-module.code,          *
 %%                                   hduthesis-hdu.l3doc-module.code,          *
 %%                                   hduthesis-hdu.stationery-module.code,     *
+%%                                                                             *
 %%                                   beamerthemehdu.sty,                       *
 %%                               and README.md.                                *
 %%   available at https://github.com/myhsia/hduthesis                          *
 %% *****************************************************************************
-\def\hduthesis@date{2024/12/31}
-\def\hduthesis@version{0.5.1}
+\def\hduthesis@date{2025/01/04}
+\def\hduthesis@version{0.5.2}
 \def\hduthesis@maintainerid{myhsia}
 
 \RequirePackage{etoolbox}
 \ProvidesExplClass{hduthesis} {\hduthesis@date} {\hduthesis@version}
-  {LaTeX Class for Thesis at Hangzhou Dianzi University}
+  {LaTeX Template Bundle for Hangzhou Dianzi University}
 
-% Module for TeX Live 2022 and (or) later
 \cs_if_exist:NF \seq_set_split:Nne
   { \cs_generate_variant:Nn \seq_set_split:Nnn { Nne } }
 \cs_if_exist:NF \seq_set_split:Nee
@@ -45,22 +45,24 @@
   { \msg_new:nnn { hduthesis } {#1} {#2} }
 \cs_new_protected:Npn \hduthesis_msg_error:nn #1#2
   { \msg_error:nnn { hduthesis } {#1} {#2} }
-
-\hduthesis_msg_new:nn { 用户协议 }
-  { \exp_not:n
-    {
-      ⚠️⚠️⚠️⚠️⚠️~     「hduThesiS」编译受阻🥵     ~⚠️⚠️⚠️⚠️⚠️~
-      使用模板前请认真阅读模板说明文档封面上的「用户协议」~
-      😡👊模板作者不对使用本模板产生的格式审查问题负责👊😡~
-      添加选项 `agreed'[\documentclass[agreed]{hduthesis}]~
-      即可顺利编译并默认代表您已同意本协议.~ 祝君科研顺利！~
-      如遇问题，可邮件反馈至📮xiamyphys@gmail.com.
-    }
-  }
-
 \cs_generate_variant:Nn \hduthesis_msg_error:nn { nx }
+\cs_new_protected:Npn \hduthesis_msg_warning:nn #1#2
+  { \msg_warning:nnn { hduthesis } {#1} {#2} }
+\cs_generate_variant:Nn \hduthesis_msg_warning:nn { nx }
+
 \hduthesis_msg_new:nn { not found module }
   { The~hduthesis~module~`#1'~not~found. }
+\hduthesis_msg_new:nn { unknown mode }
+  { Unknown~hduthesis~mode~`#1',~ loading~mode~`thesis'~instead. }
+\hduthesis_msg_new:nn { Users Agreement }
+  { \exp_not:n
+    {
+      编译受阻!~ 使用模板前请阅读用户手册封面上的「用户协议」~
+      !!!模板作者(@myhsia)不对使用本模板产生的格式审查问题负责!!!~
+      如果您同意用户协议，在全局选项中添加 `agreed' 即可解除本错误~
+      欢迎您通过邮件(myhsia@hdu.edu.cn)或GitHub提交反馈意见
+    }
+  }
 \cs_new_protected_nopar:Npn \hduthesis_load_module:n #1 
   {
     \clist_map_inline:nn {#1}
@@ -76,19 +78,13 @@
       {hduThesiS~ \text_titlecase:n {#1} ~Module}
   }
 
-% global options
 \clist_new:N \g__hdu_base_class_options_clist
 \keys_define:nn { hduthesis / classoption }
   {
     agreed .bool_set:N      = \g__hduthesis_agreement_bool,
       agreed .initial:n     = false,
       agreed .default:n     = true,
-    l3doc .bool_set:N       = \g__hduthesis_doc_bool,
-      l3doc .initial:n      = false,
-      l3doc .default:n      = true,
-    stationery .bool_set:N  = \g__hduthesis_stationery_bool,
-      stationery .initial:n = false,
-      stationery .default:n = true,
+    mode .tl_set:N          = \g__hduthesis_mode_tl,
     math-font .tl_set:N     = \g__hduthesis_math_font,
     CJKmain-font .tl_set:N  = \g__hduthesis_main_CJK_font,
     CJKsans-font .tl_set:N  = \g__hduthesis_sans_CJK_font,
@@ -108,7 +104,18 @@
   }
 \ProcessKeyOptions [ hduthesis / classoption ]
 
-\bool_if:NT \g__hduthesis_doc_bool
+\bool_if:nT
+  {
+    !\str_if_empty_p:N \g__hduthesis_mode_tl &&
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { thesis } &&
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { l3doc } &&
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { stationery } &&
+    % !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { exam } &&
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { beamer }
+  }
+  { \hduthesis_msg_warning:nx { unknown mode } { \g__hduthesis_mode_tl } }
+
+\str_if_eq:eeT { \g__hduthesis_mode_tl } { l3doc }
   {
     \PassOptionsToClass { 11pt, letterpaper, kernel } { l3doc }
     \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { l3doc }
@@ -116,7 +123,7 @@
     \endinput
   }
 
-\bool_if:NT \g__hduthesis_stationery_bool
+\str_if_eq:eeT { \g__hduthesis_mode_tl } { stationery }
   {
     \PassOptionsToClass { 12pt } { letter }
     \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { letter }
@@ -124,37 +131,53 @@
     \endinput
   }
 
-\PassOptionsToClass { a4paper, zihao = -4 } { ctexrep }
-\PassOptionsToPackage { quiet, no-math } { xeCJK }
-\exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { ctexrep }
-\bool_if:NTF \g__hduthesis_agreement_bool
-  {
-    \RequirePackage{hyperref}
-    \pdfstringdefDisableCommands
-      {
-        \def \cite#1 {<#1>}
-        \def \hologoRobust#1 {<#1>}
-      }
-    \AtBeginDocument
-      { \hypersetup { hidelinks, pdfproducer = hduThesiS~by~Mingyu~Xia } }
-  } { \hduthesis_msg_error:nn { 用户协议 } { 未确认 } }
+% \str_if_eq:eeT { \g__hduthesis_mode_tl } { exam }
+%   {
+%     \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { article }
+%     \hduthesis_load_module:n { hdu.exam }
+%     \endinput
+%   }
 
-\RequirePackage { siunitx, circuitikz, pgfplots, listings,
-                  hologo, lipsum, zhlipsum, booktabs, multicol }
-\pgfplotsset { compat = newest }
-\hologoFontSetup { general = \sffamily }
-\graphicspath
+\str_if_eq:eeT { \g__hduthesis_mode_tl } { beamer }
   {
-    {./figure/}{./figures/}{./image/}{./images/}
-    {./graphics/}{./graphic/}{./pictures/}{./picture/}
+    \PassOptionsToClass { aspectratio = 2013 } { beamer }
+    \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { beamer }
+    \usetheme{hdu}
+    \endinput
   }
-\hduthesis_load_module:n { typeset }
-\hduthesis_load_module:n { layout }
-\cs_new_protected:Nn \__hduthesis_docinfo_degree_if_aux:
+
+\bool_if:nT
   {
-    \int_compare:nNnTF { \tl_count:N \l__docinfo_stdntid_tl } = { 8 }
-      { \hduthesis_load_module:n { bc.config } }
-      { \hduthesis_load_module:n { pg.config } }
+     \str_if_eq_p:ee { \g__hduthesis_mode_tl } { thesis } ||
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { l3doc } ||
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { stationery } ||
+    % !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { exam } ||
+    !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { beamer }
+  }
+  {
+    \PassOptionsToClass { a4paper, zihao = -4 } { ctexrep }
+    \PassOptionsToPackage { quiet, no-math } { xeCJK }
+    \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { ctexrep }
+    \bool_if:NTF \g__hduthesis_agreement_bool
+      {
+        \RequirePackage{hyperref}
+        \pdfstringdefDisableCommands
+          {
+            \def \cite#1 {<#1>}
+            \def \hologoRobust#1 {<#1>}
+          }
+        \AtBeginDocument
+          { \hypersetup { hidelinks, pdfproducer = hduThesiS~by~Mingyu~Xia } }
+      } { \hduthesis_msg_error:nn { Users Agreement } { Unconfirmed } }
+    \hduthesis_load_module:n { typeset }
+    \hduthesis_load_module:n { layout }
+    \cs_new_protected:Nn \__hduthesis_docinfo_degree_if_aux:
+      {
+        \int_compare:nNnTF { \tl_count:N \l__docinfo_stdntid_tl } = { 8 }
+          { \hduthesis_load_module:n { bc.config } }
+          { \hduthesis_load_module:n { pg.config } }
+      }
+    \endinput
   }
 
 \endinput

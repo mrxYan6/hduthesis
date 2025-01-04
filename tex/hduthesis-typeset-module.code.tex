@@ -1,5 +1,15 @@
 \hduthesis_provide_module:n {typeset}
 
+\RequirePackage { circuitikz, pgfplots, listings, hologo,
+                  lipsum, zhlipsum, booktabs, multicol }
+\pgfplotsset { compat = newest }
+\hologoFontSetup { general = \sffamily }
+\graphicspath
+  {
+    {./figure/}{./figures/}{./image/}{./images/}
+    {./graphics/}{./graphic/}{./pictures/}{./picture/}
+  }
+
 \linespread{1.39}
 \dim_set:Nn \parindent { 2\ccwd }
 \newcommand \semilarge { \@setfontsize \semilarge{14}{16.5} }
@@ -14,14 +24,14 @@
   [
     Extension   = .otf,      BoldItalicFont = *-bolditalic,
     UprightFont = *-regular, BoldFont       = *-bold,
-    ItalicFont  = *-italic,  Scale          = .9,
+    ItalicFont  = *-italic,  Scale          = .9
   ]
 
-\RequirePackage { amssymb, mathtools, cancel, fixdif, derivative }
+\RequirePackage { amssymb, mathtools, cancel, fixdif, derivative, siunitx }
 \file_if_exist:nTF { physics2.sty }
   {
     \RequirePackage{physics2}
-    \usephysicsmodule{ ab, braket, ab.legacy, op.legacy, bm-um.legacy }
+    \usephysicsmodule{ ab, braket, op.legacy, bm-um.legacy }
   } { \RequirePackage{bm} }
 \RequirePackage
   [ warnings-off = { mathtools-colon, mathtools-overbracket } ] {unicode-math}

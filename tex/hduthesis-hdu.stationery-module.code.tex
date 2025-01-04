@@ -12,10 +12,18 @@
   }
 
 \RequirePackage{ hyperref, geometry, tikz, twemojis, fancyhdr }
+\hypersetup{hidelinks}
+\urlstyle{same}
 \NewDocumentCommand \DocInfo { m }
   {
+    \tl_clear:N \@author
+    \tl_clear:N \l__docinfo_mail_tl
     \keys_set:nn { hdu.stationery / docinfo } {#1}
-    \hypersetup { hidelinks, pdftitle = \@title, pdfauthor = \@author }
+    \hypersetup
+      {
+        pdftitle = Hangzhou Dianzi University,
+        pdfsubject = \@title, pdfauthor = \@author
+      }
   }
 \geometry
   { hmargin = .8in, bottom = .75in, top = 1.95in, footskip = 15.87pt,
@@ -52,14 +60,14 @@
     Hangzhou,~ Zhejiang~Province,~ 310018,~ P.R.China
   }
 \cfoot {}
-\rfoot { \small \texttwemoji{1f310}~ www.hdu.edu.cn~ }
+\rfoot { \small \texttwemoji{1f310}~ \url{www.hdu.edu.cn}~ }
 \pagestyle{fancy}
 
 \renewcommand* \maketitle
   {
     \group_begin: \small
-    \bool_if:nF
-      { \tl_if_empty_p:N \@author && \tl_if_empty_p:N \l__docinfo_mail_tl }
+    \bool_if:nT
+      { !\tl_if_empty_p:N \@author || !\tl_if_empty_p:N \l__docinfo_mail_tl }
       { \makebox [ 4em ] [ l ] { \scshape From } }
     \tl_if_empty:NTF \@author
       { \@latex@warning@no@line {No \noexpand \author given} } { \@author{}~ }

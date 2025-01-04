@@ -1,4 +1,240 @@
 \subsection{\file{hduthesis-bc.config-module.code} 的实现}
 
-\cmd{bc.config} 模块实现的过程略，主要是对前面定义的命令进行调用，并通过 \cs{ctexset}
-或对标准文档类 \cls{report} 中的命令进行重定义.
+由于模块 \file{bc.config} 是通过命令 \cs{__hduthesis_docinfo_degree_if_aux:} 在命令 \cs{DocInfo} 中加载的，所以需要在此模块前后用 \cmd{\ExplSyntaxOn \makeatletter} 和 \cmd{\makeatother \ExplSyntaxOff} 包裹.
+
+提供模块 \file{bc.config} 文件
+\begin{minted} [ linenos, bgcolor = bg, breaklines ] {tex}
+  \hduthesis_provide_module:n {bc.config}
+\end{minted}
+
+设置页面布局、页眉、目录页码格式
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \geometry { top = 3.25cm, bottom = 2.4cm, left = 4cm, right = 2cm,
+              headheight = 15pt, headsep = .72cm }
+  \fancyhead[C]
+    { \raisebox { .12ex } { \small 杭州电子科技大学 \l__docinfo_entitle_tl } }
+  \hook_gput_code:nnn {cmd/tableofcontents/before} { . }
+    {
+      \clearpage 
+      \pagenumbering{Roman} \cfoot{\small \thepage}
+    }
+  \hook_gput_code:nnn { cmd/tableofcontents/after } { . }
+    {
+      \thispagestyle{fancy} \clearpage
+      \pagenumbering{arabic} \cfoot{}
+    }
+\end{minted}
+
+使用辅助函数 \cs{__hduthesis_cover_bc_aux:} 重定义 \cs{maketitle} 命令，用于生成封面，并对其单独设置页面布局
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \RenewDocumentCommand \maketitle {}
+    {
+      \newgeometry{ margin = 3cm }
+      \begin{titlepage}
+        \__hduthesis_cover_bc_aux:
+      \end{titlepage}
+      \restoregeometry
+    }
+\end{minted}
+
+定义 \cs{l__hduthesis_grade_int} 保存毕业年份，根据当前月份判断毕业年份：如果当前月份小于 9 月，则今年毕业；否则判定为明年毕业
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \int_new:N \l__hduthesis_grade_int
+  \int_set:Nn \l__hduthesis_grade_int
+    {
+      \int_compare:nNnTF {\c_sys_month_int} < 9
+      {\c_sys_year_int} {\int_eval:n {\c_sys_year_int + 1}}
+    }
+\end{minted}
+
+使用辅助函数 \cs{__hduthesis_cover_bc_aux:} 重定义封面页的内容
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \cs_new_protected_nopar:Nn \__hduthesis_cover_bc_aux:
+    {
+      \begin{center}
+        \vspace*{14\p@}
+        \includegraphics[ width = .64\linewidth ]{hdutitle}
+        \par \vspace*{36\p@}
+        \scalebox{2.75}
+        {
+          \textbf
+            {
+              \__hduthesis_cover_spread_box:nn
+                { .205\paperwidth } { \l__docinfo_entitle_tl }
+            }
+        }
+        \par \vspace*{1.5\baselineskip}
+        { \LARGE （\int_use:N \l__hduthesis_grade_int \bfseries 届） }
+        \par \vspace*{3.0\baselineskip}
+        \begin{tabular}
+          {
+            >{\large\bfseries}p{5.5\ccwd}@{}
+            >{\large\centering\arraybackslash\kaishu}p{.65\linewidth}@{}
+          }
+          \__hduthesis_cover_spread_box:nn { 4\ccwd } { 题目 } &
+          \__hduthesis_cover_center_box:nn { .95\linewidth } { \@title }\\[5.2ex]
+          \__hduthesis_cover_spread_box:nn { 4\ccwd } { 学院 } &
+          \__hduthesis_cover_center_box:nn { .95\linewidth }
+            { \l__docinfo_department_tl }\\[5.2ex]
+          \__hduthesis_cover_spread_box:nn { 4\ccwd } { 专业 } &
+          \__hduthesis_cover_center_box:nn { .95\linewidth }
+            { \l__docinfo_major_tl }\\[5.2ex]
+          \__hduthesis_cover_spread_box:nn { 4\ccwd } { 班级 } &
+          \__hduthesis_cover_center_box:nn { .95\linewidth }
+            { \l__docinfo_class_tl }\\[5.2ex]
+          \__hduthesis_cover_spread_box:nn { 4\ccwd } { 学号 } &
+          \__hduthesis_cover_center_box:nn { .95\linewidth }
+            { \l__docinfo_stdntid_tl }\\[5.2ex]
+          \__hduthesis_cover_spread_box:nn { 4\ccwd } { 学生姓名 } &
+          \__hduthesis_cover_center_box:nn { .95\linewidth } { \@author }\\[5.2ex]
+          \__hduthesis_cover_spread_box:nn { 4\ccwd } { 指导教师 } &
+          \__hduthesis_cover_center_box:nn { .95\linewidth }
+            { \l__docinfo_cnsupervisor_tl \quad \l__docinfo_cnrole_tl }\\[5.2ex]
+          \__hduthesis_cover_spread_box:nn { 4\ccwd } { 完成日期 } &
+          \__hduthesis_cover_center_box:nn { .95\linewidth }
+            {
+              \textsf{\int_use:N \c_sys_year_int} 年
+              \textsf{\int_use:N \c_sys_month_int} 月
+            }
+        \end{tabular}
+      \end{center}
+    }
+\end{minted}
+
+使用辅助函数 \cs{__hduthesis_commitment_bc_aux:} 定义 \cs{commitment} 命令，用于生成承诺书页面. 该命令接收一个可选参数，用于添加签名图片与日期
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \NewDocumentCommand \commitment { O{} }
+    {
+      \newgeometry{ margin = 3cm }
+      \titlepage
+        \__hduthesis_commitment_bc_aux:n {#1}
+      \endtitlepage
+      \restoregeometry
+    }
+\end{minted}
+
+使用辅助函数 \cs{__hduthesis_commitment_bc_aux:} 定义承诺书页面的内容
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \cs_new_protected_nopar:Npn \__hduthesis_commitment_bc_aux:n #1
+    {
+      \vspace*{65\p@}
+      \begin{center}
+        \@beginparpenalty \@lowpenalty
+        \Large \textsf
+          { \bfseries \__hduthesis_cover_spread_box:nn { 6\ccwd }{ 诚信承诺 } }
+        \@endparpenalty \@M
+      \end{center}
+      \vspace*{.4\baselineskip} \par
+      \linespread{2.1}
+        { \semilarge
+          我谨在此承诺：本人所写的毕业论文《\@title 》均系本人独立完成，
+          没有抄袭行为，凡涉及其他作者的观点和材料，均作了注释，若有不实，后果由本人承担。
+          \par\vspace*{\baselineskip} \bfseries\sffamily
+          \hskip.48\linewidth 承诺人（签名）：
+          \__hduthesis_signature_process_aux:nnn {#1}{1}{0}
+          \tl_if_empty:NF \l__hduthesis_signature_figure_tl
+            {
+              \signature { \l__hduthesis_signature_figure_tl }
+              \tl_clear:N \l__hduthesis_signature_figure_tl
+            }
+          \par \vspace*{.5\baselineskip}
+          \hskip \dim_eval:n { .48\linewidth - 1em }
+          \makebox [ 3em ]
+            { \__hduthesis_signature_process_aux:nnn {#1}{1}{1} } 年
+          \makebox [ 2em ]
+            { \__hduthesis_signature_process_aux:nnn {#1}{1}{2} } 月
+          \makebox [ 2em ]
+            { \__hduthesis_signature_process_aux:nnn {#1}{1}{3} } 日
+        }
+    }
+\end{minted}
+
+重新定义摘要环境，该环境接收一个可选参数，用于生成中英文摘要页面，默认为英文页面
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \RenewDocumentEnvironment {abstract} { O{en} }
+    {
+      \str_if_eq:nnT {#1} {en}
+        {
+          \tl_set:Nn \l__keywords_name_tl {Keywords:~}
+          \tl_set:Nn \l__keywords_sep_tl {;~}
+          \@beginparpenalty\@lowpenalty
+          \chapter*{\normalfont\bfseries ABSTRACT}
+        }
+      \str_if_eq:nnT {#1} {cn}
+        {
+          \tl_set:Nn \l__keywords_name_tl {\textsf{关键词：}}
+          \tl_set:Nn \l__keywords_sep_tl {；}
+          \@beginparpenalty\@lowpenalty
+          \chapter*{摘\qquad 要}
+        }
+    }
+    {
+      \tl_clear:N \l__abstract_name_tl
+      \cfoot{} \clearpage
+    }
+\end{minted}
+
+新建一个列表 \cs{l__abstract_keywords_clist} 保存关键词，定义 \cs{keywords} 命令，通过 \env{abstract} 环境的可选参数来以不同的分隔符输出关键词
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \clist_new:N \l__abstract_keywords_clist
+  \NewDocumentCommand \keywords { m }
+    {
+      \par \vspace*{\baselineskip}
+      \noindent\textbf{\l__keywords_name_tl}
+      \clist_set:Nn \l__abstract_keywords_clist {#1}
+      \clist_use:Nn \l__abstract_keywords_clist {\l__keywords_sep_tl}
+    }
+\end{minted}
+
+加载 \pkg{tocloft} 宏包，重新定义目录页的格式
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \RequirePackage{tocloft}
+  \renewcommand \contentsname {\hfill 目 \qquad 录 \hfill}
+  \renewcommand* \cfttoctitlefont {\sffamily\semiLarge}
+  \dim_set:Nn \cftbeforetoctitleskip {3pt}
+  \dim_set:Nn \cftaftertoctitleskip {24pt}
+  \dim_set:Nn \cftbeforechapskip {1pt}
+  \dim_set:Nn \cftbeforesecskip {-.2pt}
+\end{minted}
+
+对 \hologo{LaTeX2e} 中用于生成目录导向线的宏 \cs{@dottedtocline} 打补丁，将导向线改为 ``dash'' 样式
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \patchcmd { \@dottedtocline }
+    { \leaders \hbox { $\m@th\mkern \@dotsep mu\hbox{.}\mkern \@dotsep mu$ } }
+    { \kern 4pt \leaders \hbox { $\m@th\mkern .4 mu\hbox{-}\mkern .4 mu$ } } {}{}
+\end{minted}
+
+更改目录章节的项目间距、字体格式、导向线密度和目录深度
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \renewcommand* \l@chapter {\@dottedtocline{1}{0em}{1.6em}}
+  \renewcommand* \l@section {\@dottedtocline{1}{2.3em}{2.1em}}
+  \renewcommand* \@dotsep {1.7}
+  \renewcommand* \@pnumwidth {2.5ex}
+  \renewcommand* \cftchapfont {\normalfont}
+  \setcounter{tocdepth}{1}
+\end{minted}
+
+使用 \pkg{ctex} 宏包设置章节标题格式
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \ctexset
+    {
+      chapter    =
+        {
+          fixskip = true, name = {}, beforeskip = 32pt, afterskip = 32pt,
+          format+ = \sffamily\semiLarge, pagestyle = fancy
+        },
+      section    =
+        {
+          fixskip = true, format = \sffamily\large, beforeskip = 2ex, afterskip = 2.75ex
+        },
+      subsection =
+        {
+          fixskip = true, format = \sffamily\semilarge, beforeskip = 2ex, afterskip = 2.75ex
+        }
+    }
+\end{minted}
+
+结束模块 \file{hduthesis-bc.config-module.code} 文件
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \endinput
+\end{minted}

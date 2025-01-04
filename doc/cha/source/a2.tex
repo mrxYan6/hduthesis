@@ -5,6 +5,27 @@
   \hduthesis_provide_module:n {typeset}
 \end{minted}
 
+调用 \pkg{circuitikz}, \pkg{pgfplots}, \pkg{listings}, \pkg{hologo}, \pkg{lipsum}, \pkg{zhlipsum}, \pkg{booktabs}, \pkg{multicol} 宏包
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \RequirePackage { circuitikz, pgfplots, listings, hologo,
+                    lipsum, zhlipsum, booktabs, multicol }
+\end{minted}
+
+设置 \pkg{pgfplots} 宏包的兼容性为最新版本，设置 \pkg{hologo} 宏包的全局字体为无衬线字体
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \pgfplotsset { compat = newest }
+  \hologoFontSetup { general = \sffamily }
+\end{minted}
+
+设置图片文件夹的常用相对路径
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \graphicspath
+    {
+      {./figure/}{./figures/}{./image/}{./images/}
+      {./graphics/}{./graphic/}{./pictures/}{./picture/}
+    }
+\end{minted}
+
 设置行间距
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
   \linespread{1.39}
@@ -33,7 +54,7 @@
     [
       Extension   = .otf,      BoldItalicFont = *-bolditalic,
       UprightFont = *-regular, BoldFont       = *-bold,
-      ItalicFont  = *-italic,  Scale          = .9,
+      ItalicFont  = *-italic,  Scale          = .9
     ]
 \end{minted}
 
@@ -47,7 +68,7 @@
   \file_if_exist:nTF { physics2.sty }
     {
       \RequirePackage{physics2}
-      \usephysicsmodule{ ab, braket, ab.legacy, op.legacy, bm-um.legacy }
+      \usephysicsmodule{ ab, braket, op.legacy, bm-um.legacy }
     } { \RequirePackage{bm} }
 \end{minted}
 
@@ -82,7 +103,7 @@
     { \exp_last_unbraced:No \setCJKmonofont \g__hduthesis_mono_CJK_font }
 \end{minted}
 
-结束 \file{hduthesis-typeset-module.code} 文件
+结束模块 \file{hduthesis-typeset-module.code} 文件
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
   \endinput
 \end{minted}

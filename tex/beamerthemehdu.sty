@@ -1,93 +1,66 @@
-%% *****************************************************************************
-%%            Copyright 2024 by M.Y. XIA <xiamyphys@gmail.com>                 *
-%%                                                                             *
-%%   This work may be distributed and/or modified under the conditions of the  *
-%%   LaTeX Project Public License                                              *
-%%                                                                             *
-%%               http://www.latex-project.org/lppl.txt                         *
-%%                                                                             *
-%%   either version 1.3c of this license or any later version.                 *
-%%                                                                             *
-%%   This work has the LPPL maintenance status `maintained'.                   *
-%%                                                                             *
-%%   The Current Maintainers of this work is M.Y. XIA                          *
-%%                                                                             *
-%%   This work consists of the files hduthesis.cls,                            *
-%%                                   hduthesis-typeset-module.code,            *
-%%                                   hduthesis-layout-module.code,             *
-%%                                   hduthesis-bc.config-module.code,          *
-%%                                   hduthesis-pg.config-module.code,          *
-%%                                   hduthesis-hdu.l3doc-module.code,          *
-%%                                   hduthesis-hdu.stationery-module.code,     *
-%%                                   beamerthemehdu.sty,                       *
-%%                               and README.md.                                *
-%%   available at https://github.com/myhsia/hduthesis                          *
-%% *****************************************************************************
+\ProvidesExplPackage{beamerthemehdu}{\hduthesis@date}{\hduthesis@version}
+  {hduThesiS~ \text_titlecase:n {beamer} ~Module}
+
 \mode<presentation>
 
-% info keyval
-\RequirePackage{keyval,tikz,graphicx}
-\usetikzlibrary{arrows,fadings,decorations.pathreplacing}
-\tikzset{%
-    every picture/.append style = {%
-        line join = round, line cap = round, thick
-    }
-}
+\RequirePackage{tikz}
+\usetikzlibrary{fadings}
 \graphicspath
   {
     {./figure/}{./figures/}{./image/}{./images/}
     {./graphics/}{./graphic/}{./pictures/}{./picture/}
   }
 
-\ExplSyntaxOn
-
-\keys_define:nn { infoset }
+\keys_define:nn { beamerthemehdu / docinfo }
   {
     title     .tl_set:N = \@title,
-    subtitle  .tl_set:N = \l__infoset_subtitle_tl,
+    subtitle  .tl_set:N = \l__docinfo_subtitle_tl,
     author    .tl_set:N = \@author,
     date      .tl_set:N = \@date,
-    supervisor.tl_set:N = \l__infoset_supervisor_tl,
-    reference .tl_set:N = \l__infoset_reference_tl,
+    supervisor.tl_set:N = \l__docinfo_supervisor_tl,
+    bibsource .tl_set:N = \l__docinfo_reference_tl,
   }
-\NewDocumentCommand \infoset { m }
+\NewDocumentCommand \DocInfo { m }
   {
-    \keys_set:nn { infoset } { #1 }
+    \keys_set:nn { beamerthemehdu / docinfo } { #1 }
     \title { \large \@title }
-    \tl_set:Nn \insertshorttitle { \textsc { \l__infoset_subtitle_tl } }
+    \tl_set:Nn \insertshorttitle { \textsc { \l__docinfo_subtitle_tl } }
     \author [ \@author ]
       {
         \@author
-        \tl_if_empty:NF \l__infoset_supervisor_tl
+        \tl_if_empty:NF \l__docinfo_supervisor_tl
           { 
             \texorpdfstring
-              { \\[2ex] \small Supervised~by~\l__infoset_supervisor_tl }{}
+              { \\[2ex] \small Supervised~by~\l__docinfo_supervisor_tl }{}
           }
       }
     \date { \@date }
-    \tl_if_empty:NF \l__infoset_reference_tl
+    \tl_if_empty:NTF \l__docinfo_bibsource_tl
       {
-        \RequirePackage
-          [ backend = biber, bibstyle = numeric, citestyle = numeric-comp,
-            autocite = superscript, sorting = none
-          ] { biblatex }
-        \addbibresource { \l__infoset_reference_tl }
-        \newcommand* \mkbibbracketsuperscript[1]
-          { \mkbibsuperscript { \mkbibbrackets{#1} } }
-        \DeclareCiteCommand \supercite [\mkbibbracketsuperscript]
+        \newcommand* \printbibliography
           {
-            \usebibmacro{cite:init}
-            \let\multicitedelim=\supercitedelim
-            \let\multicitesubentrydelim=\supercitesubentrydelim
-            \let\multiciterangedelim=\superciterangedelim
-            \let\multicitesubentryrangedelim=\supercitesubentryrangedelim
-            \iffieldundef{prenote}{}
-            {\BibliographyWarning{Ignoring prenote argument}}%
-            \iffieldundef{postnote}{}
-            {\BibliographyWarning{Ignoring postnote argument}}
+            \begin{frame}[t]
+              \frametitle{Bibliography}
+            \end{frame}
           }
-          {\usebibmacro{citeindex}\usebibmacro{cite:comp}}{}
-          {\usebibmacro{cite:dump}}
+        \newcounter {citecount}
+        \renewcommand*\cite[1]
+          {
+            \refstepcounter{citecount}
+            \textsuperscript{[\thecitecount]}
+          }
+      }
+      {
+        \RequirePackage [ backend = bibtex8, sorting = none ] { biblatex }
+        \addbibresource { \l__docinfo_reference_tl }
+        \let \@printbibliography \printbibliography
+        \renewcommand* \printbibliography
+          {
+            \begin{frame}[t, allowframebreaks]{Bibliography}
+              \small
+              \@printbibliography
+            \end{frame}
+          }
       }
   }
 
@@ -102,82 +75,87 @@
   {
     \tikz [ remember~picture, overlay ]
       \node [ below~right, yshift = -1em ] at (current~page.north~west) 
-        { \includegraphics [ width = \textwidth/3 ]{ hdubadge.pdf } };
+        { \includegraphics [ width = 2\textwidth/7 ]{ hdubadge.pdf } };
   }
-\ExplSyntaxOff
 
 % theme & colors
 \useoutertheme{infolines}
-\useinnertheme[shadow=false]{rounded}
+\useinnertheme[shadow = false]{rounded}
 \definecolor{hdu}{HTML}{214395}
 \definecolor{hduRed}{HTML}{BF6236}
-\usecolortheme[named=hdu]{structure}
+\usecolortheme[named = hdu]{structure}
 
-\setbeamercolor*{palette primary}{use=structure,fg=black,bg=structure.fg!40!white}
-\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=structure.fg!60!white}
-\setbeamercolor*{palette tertiary}{use=structure,fg=white,bg=structure.fg!90!white}
+\setbeamercolor*{palette~primary}{use=structure,fg=black,bg=structure.fg!30!white}
+\setbeamercolor*{palette~secondary}{use=structure,fg=white,bg=structure.fg!60!white}
+\setbeamercolor*{palette~tertiary}{use=structure,fg=white,bg=structure.fg!90!white}
 
-\setbeamercolor{block title}{use=structure,fg=structure.fg,bg=structure.fg!20!bg}
-\setbeamercolor{block title alerted}{use=alerted text,fg=alerted text.fg,bg=alerted text.fg!20!bg}
-\setbeamercolor{block title example}{use=example text,fg=example text.fg,bg=example text.fg!20!bg}
-\setbeamercolor{block body}{parent=normal text,use=block title,bg=block title.bg!50!bg}
-\setbeamercolor{block body alerted}{parent=normal text,use=block title alerted,bg=block title alerted.bg!50!bg}
-\setbeamercolor{block body example}{parent=normal text,use=block title example,bg=block title example.bg!50!bg}
+\setbeamercolor{block~title}{use=structure,fg=structure.fg,bg=structure.fg!20!bg}
+\setbeamercolor{block~body}{parent=normal~text,use=block~title,bg=block~title.bg!50!bg}
+\addtobeamertemplate{block~begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}
 
-\setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{page number in head/foot}{}
-\addtobeamertemplate{headline}{}{
-  \tikz[remember picture, overlay]{
-    \filldraw [hduRed, ultra thick, line cap = butt] (0,0) --++ (\paperwidth*\fpeval{\insertpagenumber-1}/\fpeval{\insertdocumentendpage-1},0);
-    \draw [white, very thick, yshift = -.6pt] (0,0) --++ (\paperwidth,0);
+\setbeamercolor{block~title~alerted}{use=alerted~text,fg=alerted~text.fg,bg=alerted~text.fg!20!bg}
+\setbeamercolor{block~body~alerted}{parent=normal~text,use=block~title~alerted,bg=block~title~alerted.bg!50!bg}
+\addtobeamertemplate{block~alerted~begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}
+
+\setbeamercolor{block~title~example}{use=example~text,fg=example~text.fg,bg=example~text.fg!20!bg}
+\setbeamercolor{block~body~example}{parent=normal~text,use=block~title~example,bg=block~title~example.bg!50!bg}
+\addtobeamertemplate{block~example~begin}{\pgfsetfillopacity{0.8}}{\pgfsetfillopacity{1}}
+
+\addtobeamertemplate{headline}{}
+  {
+    \tikz [ remember~picture, overlay ]
+      {
+        \filldraw [hduRed, ultra~thick, line~cap = butt]
+          (0,0) --++
+          (\paperwidth * \fp_eval:n
+            {(\insertpagenumber-1)/(\insertdocumentendpage-1)},0);
+        \draw [white, very~thick, yshift = -.6pt] (0,0) --++ (\paperwidth,0);
+      }
   }
-}
 
-\AtBeginSection[]{
-  \begin{frame}
-    \ifcsname @headlogo\endcsname
-      \tikz [remember picture, overlay] \node [below right,yshift=-1em] at (current page.north west) {\includegraphics[width=\textwidth/3]{\@headlogo}};
-    \fi
-    \vfill
-    \usebeamerfont{title}\insertsectionhead\par%
-    \tikz{
-        \draw [hdu!20, ultra thick] (0,0) --++ (2*\linewidth/3,0);
-        \filldraw [hdu!60, ultra thick, path fading=west] (0,0) --++ (2*\linewidth*\fpeval{\insertframenumber-1}/\fpeval{\inserttotalframenumber-1}/3,0);
-    }
-  \vfill
-  \end{frame}
-}
+\AtBeginSection[]
+  {
+    \begin{frame}
+      \tikz [ remember~picture, overlay ]
+        \node [ below~right, yshift = -1em ] at (current~page.north~west) 
+          { \includegraphics [ width = 2\textwidth/7 ]{ hdubadge.pdf } };
+      \vfill
+      \usebeamerfont{title} \insertsectionhead \par
+      \tikz
+        {
+          \draw [line~cap = round, hdu!20, ultra~thick]
+            (0,0) --++ (2\linewidth/3,0);
+          \filldraw [line~cap = round, hdu!60, ultra~thick, path~fading=west]
+            (0,0) --++
+            (2\linewidth * \fp_eval:n
+              {(\insertframenumber - 1)/(\inserttotalframenumber - 1)}/3,0);
+        }
+      \vfill
+    \end{frame}
+  }
 
-\addtobeamertemplate{block begin}{\pgfsetfillopacity{0.75}}{\pgfsetfillopacity{1}}
-\addtobeamertemplate{block alerted begin}{\pgfsetfillopacity{0.75}}{\pgfsetfillopacity{1}}
-\addtobeamertemplate{block example begin}{\pgfsetfillopacity{0.75}}{\pgfsetfillopacity{1}}
-
-\setbeamercolor{title}{parent=author in head/foot}
-\setbeamertemplate{title page}[default][colsep=-4bp,rounded=true]
-\usesubitemizeitemtemplate{%
-    \tiny\raise1.5pt\hbox{\color{beamerstructure}$\blacktriangleright$}%
-}
-\usesubsubitemizeitemtemplate{%
-    \tiny\raise1.5pt\hbox{\color{beamerstructure}$\bigstar$}%
-}
+\setbeamercolor{title}{parent=author~in~head/foot}
+\setbeamertemplate{title~page}[default][colsep=-4bp,rounded=true]
+\usesubitemizeitemtemplate
+  {\tiny\raise1.5pt\hbox{\color{beamerstructure}$\blacktriangleright$}}
+\usesubsubitemizeitemtemplate
+  { \tiny\raise1.5pt\hbox{\color{beamerstructure}$\bigstar$} }
 % \setbeamersize{text margin left = 1em, text margin right=1em}
 
 % math settings
 \numberwithin{equation}{section}
-\RequirePackage[mono=false]{libertine}
 \RequirePackage{keytheorems,amssymb,mathtools,physics2,fixdif,derivative,cancel,siunitx,nicematrix}
-\renewcommand\qedsymbol{$\color{gray}\blacksquare$}
-\usephysicsmodule{ab,ab.braket,diagmat,doubleprod,xmat,ab.legacy,op.legacy}
+\renewcommand* \qedsymbol {$\color{gray}\blacksquare$}
+\usephysicsmodule{ ab, braket, op.legacy }
 \RequirePackage[e]{esvect}
 \let\vec\vv
-\def\i{\mathrm i}\def\e{\mathrm e}\def\T{\mathsf T}
-\let\leq\leqslant\let\geq\geqslant
 
 % Figure settings
-\RequirePackage[labelsep=period,figurename=FIG,font=footnotesize]{caption}
+\RequirePackage
+  [ labelsep = period, figurename = \textsc{Fig}, font = footnotesize ]{caption}
 \RequirePackage{subcaption,booktabs}
 \captionsetup{belowskip=0pt}
-\captionsetup[sub]{font=scriptsize}
+\captionsetup[sub]{font = scriptsize}
 \RequirePackage{anyfontsize}
 \renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
 \RequirePackage{ragged2e}
@@ -185,4 +163,5 @@
 \AtBeginEnvironment{columns}{\vspace*{-.5ex}}
 
 \mode<all>
+
 \endinput

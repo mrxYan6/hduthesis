@@ -154,7 +154,7 @@
     }
 \end{minted}
 
-定义处理文档信息的辅助命令. 其中论文标题与作者信息为一维数组，指导教师信息为二维数组.
+定义处理文档信息的辅助命令. 其中论文标题与作者信息为一维数组，指导教师信息为二维数组. 如果用户未同意用户协议，则清空参考文献来源，以避免加载 \pkg{biblatex} 宏包. 如果参考文献来源为空，则定义 \cs{printbibliography} 命令为输出参考文献空章节，并定义 \cs{cite} 命令为输出参考文献引用标记. 否则加载 \pkg{gbt7714} 宏包，设置参考文献样式为 \texttt{gbt7714-numerical}，定义 \cs{printbibliography} 命令为输出参考文献并将其加入目录.
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
   \cs_set_protected_nopar:Nn \__hduthesis_docinfo_process_aux:
     {
@@ -175,20 +175,25 @@
       \bool_if:NF \g__hduthesis_agreement_bool
         { \tl_clear:N \l__docinfo_bibsource_tl }
       \tl_if_empty:NTF \l__docinfo_bibsource_tl
-        {
-          \newcommand*\printbibliography{\chapter*{参考文献}}
-          \renewcommand*\cite[1]{\textsuperscript{[##1]}}
-        }
-        {
-          \RequirePackage[sort&compress]{gbt7714}
-          \bibliographystyle{gbt7714-numerical}
-          \dim_set:Nn \bibsep {.35ex}
-          \newcommand*\printbibliography
-            {
-              \nocite{*} \bibliography { \l__docinfo_bibsource_tl }
-              \addcontentsline{toc}{chapter}{参考文献}
-            }
-        }
+      {
+        \newcommand*\printbibliography{\chapter*{参考文献}}
+        \newcounter {citecount}
+        \renewcommand*\cite[1]
+          {
+            \refstepcounter{citecount}
+            \textsuperscript{[\thecitecount]}
+          }
+      }
+      {
+        \RequirePackage[sort&compress]{gbt7714}
+        \bibliographystyle{gbt7714-numerical}
+        \dim_set:Nn \bibsep {.35ex}
+        \newcommand*\printbibliography
+          {
+            \bibliography { \l__docinfo_bibsource_tl }
+            \addcontentsline{toc}{chapter}{参考文献}
+          }
+      }
     }
 \end{minted}
 

@@ -19,7 +19,6 @@
 \end{minted}
 
 兼容 \hologo{TeX} Live 2022 及之后的版本. 当对应命令不存在时，在已有命令基础上新增变体
-
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
   \cs_if_exist:NF \seq_set_split:Nne
     { \cs_generate_variant:Nn \seq_set_split:Nnn { Nne } }
@@ -31,50 +30,50 @@
     { \cs_generate_variant:Nn \tl_gset:Nn { Ne } }
 \end{minted}
 
-定义新命令 \cs{hduthesis_msg_new:nn} 和 \cs{hduthesis_msg_error:nn} 用于新增错误消息和将错误消息广播到 Workspace
+定义新命令 \cs{hduthesis_msg_new:nn}、\cs{hduthesis_msg_error:nn} 和 \cs{hduthesis_msg_warning:nn} 用于新增错误/警告消息，并将消息广播到 Workspace.
+同时为 \cs{hduthesis_msg_error:nn} 和 \cs{hduthesis_msg_warning:nn} 定义变体 \cs{hduthesis_msg_error:nx} 和 \cs{hduthesis_msg_warning:nx}，用于在消息中使用参数时展开参数
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
   \cs_new_protected:Npn \hduthesis_msg_new:nn #1#2 
     { \msg_new:nnn { hduthesis } {#1} {#2} }
   \cs_new_protected:Npn \hduthesis_msg_error:nn #1#2
     { \msg_error:nnn { hduthesis } {#1} {#2} }
+  \cs_generate_variant:Nn \hduthesis_msg_error:nn { nx }
+  \cs_new_protected:Npn \hduthesis_msg_warning:nn #1#2
+    { \msg_warning:nnn { hduthesis } {#1} {#2} }
+  \cs_generate_variant:Nn \hduthesis_msg_warning:nn { nx }
 \end{minted}
 
-新增错误消息：用户协议
+新增错误消息 \cs{not found module}、\cs{unknown mode} 和 \cs{Users Agreement}，分别对应``模块未找到''、``未知模式''和``用户协议''
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \hduthesis_msg_new:nn { 用户协议 }
+  \hduthesis_msg_new:nn { not found module }
+    { The~hduthesis~module~`#1'~not~found. }
+  \hduthesis_msg_new:nn { unknown mode }
+    { Unknown~hduthesis~mode~`#1',~ loading~mode~`thesis'~instead. }
+  \hduthesis_msg_new:nn { Users Agreement }
     { \exp_not:n
       {
-        hduThesiS~ 编译受阻.~
-        使用模板前请认真阅读模板说明文档封面上的「用户协议」~
-        模板作者不对使用本模板产生的格式审查问题负责~
-        添加选项 `agreed'[\documentclass[agreed]{hduthesis}]~
-        即可顺利编译并默认代表您已同意本协议.~ 祝君科研顺利！~
-        如遇问题，可邮件反馈至 xiamyphys@gmail.com.
+        编译受阻!~
+        使用模板前请阅读用户手册封面上的「用户协议」~
+        !!!模板作者(@myhsia)不对使用本模板产生的格式审查问题负责!!!~
+        如果您同意用户协议，在全局选项中添加 `agreed' 即可解除本错误~
+        欢迎您通过邮件(myhsia@hdu.edu.cn)或GitHub提交反馈意见
       }
     }
 \end{minted}
 
-对命令 \cs{hduthesis_msg_error:nn} 新增 \cmd{nx} 变体
-\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \cs_generate_variant:Nn \hduthesis_msg_error:nn { nx }
-\end{minted}
-
-新增错误消息：未找到模块
-\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \hduthesis_msg_new:nn { not found module }
-    { The~hduthesis~module~`#1'~not~found. }
-\end{minted}
-
-定义命令 \cs{hduthesis_load_module:n} 用于加载模块，若模块不存在则输出错误消息
+定义新命令 \cs{hduthesis_load_module:n} 用于加载模块，若模块不存在则报错
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
   \cs_new_protected_nopar:Npn \hduthesis_load_module:n #1 
     {
-      \file_if_exist_input:nF { hduthesis-##1-module.code.tex }
-        { \hduthesis_msg_error:nn { not found module } {##1} }
+      \clist_map_inline:nn {#1}
+      {
+        \file_if_exist_input:nF { hduthesis-##1-module.code.tex }
+          { \hduthesis_msg_error:nn { not found module } {##1} }
+      }
     }
 \end{minted}
 
-定义命令 \cs{hduthesis_provide_module:n} 用于提供模块
+定义新命令 \cs{hduthesis_provide_module:n} 用于提供模块
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
   \cs_new_protected_nopar:Npn \hduthesis_provide_module:n #1
     {
@@ -85,19 +84,18 @@
 \end{minted}
 
 定义新数组 \cs{g__hdu_base_class_options_clist}，用于存储文档类选项
-\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines, breaklines ] {tex}
   \clist_new:N \g__hdu_base_class_options_clist
 \end{minted}
 
 定义文档类选项的键：
 \begin{enumerate}
   \item 布尔（Bool）值 \keys{\cmdmac~ agreed}：用户是否同意用户协议，初始值 \cmd{false}. 一旦输入 \cmd{agreed} 选项，则将 \cmd{agreed} 设置为 \cmd{true}，即 \cmd{agreed} 等价于 \cmd{agreed = true}
-  \item 布尔（Bool）值 \keys{\cmdmac~ l3doc}：是否启用 \cls{l3doc} 文档类，初始值 \cmd{false}. 一旦输入 \cmd{l3doc} 选项，则将 \cmd{l3doc} 设置为 \cmd{true}，即 \cmd{l3doc} 等价于 \cmd{l3doc = true}
-  \item 布尔（Bool）值 \keys{\cmdmac~ stationery}：是否启用 \cls{letter} 文档类，初始值 \cmd{false}. 一旦输入 \cmd{stationery} 选项，则将 \cmd{stationery} 设置为 \cmd{true}，即 \cmd{stationery} 等价于 \cmd{stationery = true}
+  \item 令牌（token list）\keys{\cmdmac~ mode}：模式，可选值为 \cmd{thesis}、\cmd{l3doc}、\cmd{stationery} 和 \cmd{beamer}
   \item 令牌（token list）\keys{\cmdmac~ math-font}：数学字体
-  \item 令牌（token list） \keys{\cmdmac~ CJKmain-font}：中文主字体
-  \item 令牌（token list） \keys{\cmdmac~ CJKsans-font}：中文无衬线字体
-  \item 令牌（token list） \keys{\cmdmac~ CJKmono-font}：中文等宽字体
+  \item 令牌（token list）\keys{\cmdmac~ CJKmain-font}：中文主字体
+  \item 令牌（token list）\keys{\cmdmac~ CJKsans-font}：中文无衬线字体
+  \item 令牌（token list）\keys{\cmdmac~ CJKmono-font}：中文等宽字体
   \item 未知选项 \keys{\cmdmac~ unknown}：将未知选项交给 \cs{__hduthesis_unknown_option:n} 处理
 \end{enumerate}
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
@@ -106,12 +104,7 @@
       agreed .bool_set:N      = \g__hduthesis_agreement_bool,
         agreed .initial:n     = false,
         agreed .default:n     = true,
-      l3doc .bool_set:N       = \g__hduthesis_doc_bool,
-        l3doc .initial:n      = false,
-        l3doc .default:n      = true,
-      stationery .bool_set:N  = \g__hduthesis_stationery_bool,
-        stationery .initial:n = false,
-        stationery .default:n = true,
+      mode .tl_set:N          = \g__hduthesis_mode_tl,
       math-font .tl_set:N     = \g__hduthesis_math_font,
       CJKmain-font .tl_set:N  = \g__hduthesis_main_CJK_font,
       CJKsans-font .tl_set:N  = \g__hduthesis_sans_CJK_font,
@@ -120,20 +113,18 @@
     }
 \end{minted}
 
-定义命令 \cs{__hduthesis_unknown_option:n} 用于处理未知选项
-
-若未知选项为空，则将 \cs{l_keys_key_str} 加入 \cs{g__hdu_base_class_options_clist} 列表；否则设置 \cs{l_keys_key_str} 为未知选项，并将其加入 \cs{g__hdu_base_class_options_clist} 列表
+定义新命令 \cs{__hduthesis_unknown_option:n} 用于处理未知选项. 若未知选项为空，则将 \cs{l_keys_key_str} 加入 \cs{g__hdu_base_class_options_clist} 列表；否则设置 \cs{l_keys_key_str} 为未知选项，并将其加入 \cs{g__hdu_base_class_options_clist} 列表
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
   \cs_new_protected_nopar:Npn \__hduthesis_unknown_option:n #1
     {
-      \tl_if_empty:nTF { #1 }
-        {
-          \clist_gput_right:NV \g__hdu_base_class_options_clist \l_keys_key_str
-        }
-        {
-          \exp_args:NNx \clist_gput_right:Nn \g__hdu_base_class_options_clist
-            { \l_keys_key_str = \exp_not:n {#1} }
-        }
+      \tl_if_empty:nTF {#1}
+      {
+        \clist_gput_right:NV \g__hdu_base_class_options_clist \l_keys_key_str
+      }
+      {
+        \exp_args:NNx \clist_gput_right:Nn \g__hdu_base_class_options_clist
+          { \l_keys_key_str = \exp_not:n {#1} }
+      }
     }
 \end{minted}
 
@@ -142,22 +133,34 @@
   \ProcessKeyOptions [ hduthesis / classoption ]
 \end{minted}
 
-若启用 \cmd{l3doc} 选项，加载 \cls{l3doc} 文档类为基底，加载 \file{hdu.l3doc} 模块并结束输入
-
+若令牌 \cs{g__hduthesis_mode_tl} 为空或者不是 \cmd{thesis}、\cmd{l3doc}、\cmd{stationery} 或 \cmd{beamer}，则报错``未知模式''
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \bool_if:NT \g__hduthesis_doc_bool
+  \bool_if:nT
     {
-      \PassOptionsToClass { 11pt, letterpaper } { l3doc }
+      !\str_if_empty_p:N \g__hduthesis_mode_tl &&
+      !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { thesis } &&
+      !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { l3doc } &&
+      !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { stationery } &&
+      % !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { exam } &&
+      !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { beamer }
+    }
+    { \hduthesis_msg_warning:nx { unknown mode } { \g__hduthesis_mode_tl } }
+\end{minted}
+
+若模式为 \cmd{l3doc}，则使用 \cls{l3doc} 文档类，并加载 \file{hdu.l3doc} 模块
+\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
+  \str_if_eq:eeT { \g__hduthesis_mode_tl } { l3doc }
+    {
+      \PassOptionsToClass { 11pt, letterpaper, kernel } { l3doc }
       \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { l3doc }
       \hduthesis_load_module:n { hdu.l3doc }
       \endinput
     }
 \end{minted}
 
-若启用 \cmd{stationery} 选项，加载 \cls{letter} 文档类为基底，加载 \file{hdu.stationery} 模块并结束输入
-
+若模式为 \cmd{stationery}，则使用 \cls{letter} 文档类，并加载 \file{hdu.stationery} 模块
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \bool_if:NT \g__hduthesis_stationery_bool
+  \str_if_eq:eeT { \g__hduthesis_mode_tl } { stationery }
     {
       \PassOptionsToClass { 12pt } { letter }
       \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { letter }
@@ -166,55 +169,58 @@
     }
 \end{minted}
 
-为基本文档类 \cls{ctexrep} 添加选项 \keys{a4paper, zihao = -4}，为 \pkg{xeCJK} 宏包添加选项 \keys{quiet, no-math}，加载 \cls{ctexrep} 文档类为基底，并用 \cs{exp_args:NNV} 将未知选项展开加载到 \cls{ctexrep} 文档类上
-\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \PassOptionsToClass { a4paper, zihao = -4 } { ctexrep }
-  \PassOptionsToPackage { quiet, no-math } { xeCJK }
-  \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { ctexrep }
-\end{minted}
+% % \str_if_eq:eeT { \g__hduthesis_mode_tl } { exam }
+% %   {
+% %     \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { article }
+% %     \hduthesis_load_module:n { hdu.exam }
+% %     \endinput
+% %   }
 
-如果用户未确认用户协议，输出错误消息，并不加载 \pkg{hyperref} 宏包，以免因``遇到报错而停止编译''而产生额外的 \pkg{hyperref} 警告. 否则，加载 \pkg{hyperref} 宏包，设置 \pkg{hyperref} 宏包选项
+若模式为 \cmd{beamer}，则使用 \cls{beamer} 文档类，并加载 \file{hdu.beamer} 模块
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \bool_if:NTF \g__hduthesis_agreement_bool
+  \str_if_eq:eeT { \g__hduthesis_mode_tl } { beamer }
     {
-      \RequirePackage{hyperref}
-      \pdfstringdefDisableCommands
-        {
-          \def \cite#1 {<#1>}
-          \def \hologoRobust#1 {<#1>}
-        }
-      \AtBeginDocument
-        { \hypersetup { hidelinks, pdfproducer = hduThesiS~by~Mingyu~Xia } }
-    } { \hduthesis_msg_error:nn { 用户协议 } { 未确认 } }
-\end{minted}
-
-预加载部分常用包，设置 \pkg{pgfplots} 宏包版本，设置 \pkg{hologo} 宏包字体，设置 \cs{graphicx} 包的相对路径
-\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \RequirePackage { siunitx, circuitikz, pgfplots, listings,
-                    hologo, lipsum, zhlipsum, booktabs, multicol }
-  \pgfplotsset { compat = newest }
-  \hologoFontSetup { general = \sffamily }
-  \graphicspath
-    {
-      {./figure/}{./figures/}{./image/}{./images/}
-      {./graphics/}{./graphic/}{./pictures/}{./picture/}
+      \PassOptionsToClass { aspectratio = 2013 } { beamer }
+      \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { beamer }
+      \usetheme{hdu}
+      \endinput
     }
 \end{minted}
 
-加载 \cmd{typeset} 和 \cmd{layout} 模块.
+若模式为 \cmd{thesis} 或者是除了 \cmd{l3doc}、\cmd{stationery} 和 \cmd{beamer} 之外的未知模式，则使用 \cls{ctexrep} 文档类. 如果用户未同意用户协议，则报错``Users Agreement''；如果用户同意用户协议，则加载 \pkg{hyperref} 宏包，并对其进行设置.\footnote{\color{black!10}此举是防止因``遇到``Users Agreement''报错而停止编译产生在只进行一次编译的情况下的\pkg{hyperref}警告} 加载 \file{typeset} 和 \file{layout} 模块，根据学号长度加载 \file{bc.config} 或 \file{pg.config} 模块
 \begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \hduthesis_load_module:n { typeset }
-  \hduthesis_load_module:n { layout }
-\end{minted}
-
-定义命令 \cs{__hduthesis_docinfo_degree_if_aux} 用于判断学号长度，若学号长度为 8，则加载 \cmd{bc.config} 模块；否则加载 \cmd{bc.config} 或 \cmd{pg.config} 模块. 此命令将用在 \file{hduthesis-docinfo-module.code} 模块中，因为学号长度的判断必须发生在设置文档信息后
-
-\begin{minted} [ linenos, firstnumber = last, bgcolor = bg, breaklines ] {tex}
-  \cs_new_protected:Nn \__hduthesis_docinfo_degree_if_aux:
+  \bool_if:nT
     {
-      \int_compare:nNnTF { \tl_count:N \l__docinfo_stdntid_tl } = { 8 }
-        { \hduthesis_load_module:n { bc.config } }
-        { \hduthesis_load_module:n { pg.config } }
+       \str_if_eq_p:ee { \g__hduthesis_mode_tl } { thesis } ||
+      !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { l3doc } ||
+      !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { stationery } ||
+      % !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { exam } ||
+      !\str_if_eq_p:ee { \g__hduthesis_mode_tl } { beamer }
+    }
+    {
+      \PassOptionsToClass { a4paper, zihao = -4 } { ctexrep }
+      \PassOptionsToPackage { quiet, no-math } { xeCJK }
+      \exp_args:NNV \LoadClass [ \g__hdu_base_class_options_clist ] { ctexrep }
+      \bool_if:NTF \g__hduthesis_agreement_bool
+        {
+          \RequirePackage{hyperref}
+          \pdfstringdefDisableCommands
+            {
+              \def \cite#1 {<#1>}
+              \def \hologoRobust#1 {<#1>}
+            }
+          \AtBeginDocument
+            { \hypersetup { hidelinks, pdfproducer = hduThesiS~by~Mingyu~Xia } }
+        } { \hduthesis_msg_error:nn { Users Agreement } { Unconfirmed } }
+      \hduthesis_load_module:n { typeset }
+      \hduthesis_load_module:n { layout }
+      \cs_new_protected:Nn \__hduthesis_docinfo_degree_if_aux:
+        {
+          \int_compare:nNnTF { \tl_count:N \l__docinfo_stdntid_tl } = { 8 }
+            { \hduthesis_load_module:n { bc.config } }
+            { \hduthesis_load_module:n { pg.config } }
+        }
+      \endinput
     }
 \end{minted}
 

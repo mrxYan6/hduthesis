@@ -110,7 +110,12 @@
     \tl_if_empty:NTF \l__docinfo_bibsource_tl
       {
         \newcommand*\printbibliography{\chapter*{参考文献}}
-        \renewcommand*\cite[1]{\textsuperscript{[##1]}}
+        \newcounter {citecount}
+        \renewcommand*\cite[1]
+          {
+            \refstepcounter{citecount}
+            \textsuperscript{[\thecitecount]}
+          }
       }
       {
         \RequirePackage[sort&compress]{gbt7714}
@@ -118,7 +123,7 @@
         \dim_set:Nn \bibsep {.35ex}
         \newcommand*\printbibliography
           {
-            \nocite{*} \bibliography { \l__docinfo_bibsource_tl }
+            \bibliography { \l__docinfo_bibsource_tl }
             \addcontentsline{toc}{chapter}{参考文献}
           }
       }
