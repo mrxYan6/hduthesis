@@ -1,12 +1,13 @@
 \documentclass[ mode = beamer, handout ]{hduthesis}
 
 \usepackage[mono = false]{libertine}
-\DocInfo
+\hduset
   {
-    title      = Research and Application of Micromagnetic Simulation Based on Landau-Lifshitz-Gilbert Equation,
+    title      = Beamer Theme for Hangzhou Dianzi University
+                 Based on \LaTeX3,
     subtitle   = hdu Undergraduate Thesis Proposal,
     author     = SAN Chi Nan (C668668E0),
-    date       = {\today{} / Building 6, Room 321},
+    date       = {\today{} / Xiasha Campus},
     supervisor = Prof. YIP Tsz Ching,
     bibsource  = reference.bib,
   }
@@ -53,27 +54,21 @@
   Lorem\cite{xu2023unified},
   Ipsum\cite{wang2023electrical},
   dummy\cite{haug2008quantum},
-  text\cite{wang2024switching},
-  \cite{jhuria2020spin},
-  \cite{gilbert2004phenomenological},
-  \cite{foros2005magnetization},
-  \cite{chudnovskiy2008spin},
-  \cite{foros2009noise},
-  \cite{swiebodzinski2010spin},
-  \cite{brataas2008scattering},
-  \cite{brataas2011magnetization}
+  text\cite{wang2024switching,jhuria2020spin, gilbert2004phenomenological, foros2005magnetization,
+        chudnovskiy2008spin, foros2009noise, swiebodzinski2010spin,
+        brataas2008scattering, brataas2011magnetization}
 \end{frame}
 
-\begin{frame}{The Nonequilibrium Green's Function Method}
+\begin{frame}{The NEGF Method}
   \pause
-  The NEGF method can be used to study the quantum transport properties of nanoscale devices, such as quantum dots, nanowires, and molecular junctions. The four important Green's functions in the NEGF method are
+  The Nonequilibrium Green Function (NEGF) method can be used to study the quantum transport properties of nanoscale devices, such as quantum dots, nanowires, and molecular junctions. The four important Green's functions in the NEGF method are
   \pause
   \begin{equation}
     \begin{cases*}
-      G^r = -i\theta(t - t') \ab<\{a_i(t), a_j^\dagger(t)\}> & Retarded Green's function\\
-      G^a = i\theta(t' - t) \ab<\{a_i(t), a_j^\dagger(t')\}> & Ahead Green's function\\
-      G^< = i\ab<\{a_j^\dagger(t'), a_i(t)\}> & Lesser Green's function\\
-      G^> = -i\ab<\{a_j^\dagger(t'), a_i(t)\}> & Greater Green's function
+      G^r = -i\theta(t - t') \ab\big<\{a_i(t), a_j^\dagger(t)\}> & Retarded Green's function\\
+      G^a = i\theta(t' - t) \ab\big<\{a_i(t), a_j^\dagger(t')\}> & Ahead Green's function\\
+      G^< = i\ab\big<\{a_j^\dagger(t'), a_i(t)\}> & Lesser Green's function\\
+      G^> = -i\ab\big<\{a_j^\dagger(t'), a_i(t)\}> & Greater Green's function
     \end{cases*}
   \end{equation}
   \pause
