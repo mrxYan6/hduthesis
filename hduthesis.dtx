@@ -137,13 +137,11 @@ Copyright and License
 %</internal>
 %
 %<*driver|package>
-\RequirePackage{etoolbox, expl3, xparse}
+\RequirePackage{etoolbox}
 %</driver|package>
 %<*driver>
 \documentclass[mode = l3doc, full]{hduthesis}
-\usepackage[fontsize = 10.5pt]{fontsize}
 \usepackage[mono = false]{libertine}
-\setmonofont[Scale = .875]{Maple Mono-Light}
 \makeindex
 \begin{document}
   \DocInput{\jobname.dtx}
@@ -182,8 +180,8 @@ Copyright and License
 %   \item 本模板根据杭州电子科技大学教务处颁发的
 %   \href{https://jwc.hdu.edu.cn/2022/0428/c4528a153813/page.htm}
 %     {杭电理工类毕业论文写作规范} 编写而成，作者不对使用本模板产生的格式审查问题负责.
-%   \ulem{如果您所在的学院因论文查重、收录等原因要求提交 \file{.docx} 格式，
-%     不接收 \file{.pdf} 论文稿件，请勿执意使用本模板，避免因格式转换带来不必要的麻烦.}
+%     如果您所在的学院因论文查重、收录等原因要求提交 \file{.docx} 格式，
+%     不接收 \file{.pdf} 论文稿件，请勿执意使用本模板，避免因格式转换带来不必要的麻烦.
 %   使用本模板时，请按编译错误提示操作来勾选同意用户协议.
 %   \item 欢迎前往 \href{https://github.com/myhsia/hduthesis/issues}{GitHub}
 %   提交反馈意见，为推动学校认证与规范化 \hologo{hduthesis} 贡献力量.
@@ -204,10 +202,10 @@ Copyright and License
 %
 % 对于未接触过 \hologo{LaTeX} 的初学者，推荐阅读
 % \href{https://tug.ctan.org/info/lshort/english/lshort.pdf}
-%   {\ulem{The Not So Short Introduction to \hologo{LaTeX2e}}}
+%   {The Not So Short Introduction to \hologo{LaTeX2e}}
 % （可在终端执行 |texdoc lshort| 获取）或者其中文版
 % \href{http://mirrors.ctan.org/info/lshort/chinese/lshort-zh-cn.pdf}
-%   {\ulem{《一份（不太）简短的 \hologo{LaTeX2e} 介绍》}}
+%   {《一份（不太）简短的 \hologo{LaTeX2e} 介绍》}
 % （可在终端执行 |texdoc lshort-zh-cn| 获取）.
 %
 % \subsection{模板组成}
@@ -294,11 +292,11 @@ Copyright and License
 % \begin{enumerate}
 %   \item 模板的章节（\cs[no-index]{chapter}、\cs[no-index]{section}、
 %   \cs[no-index]{subsection}）字体、前后间距完全按照
-%   \ulem{杭电理工类毕业论文写作规范}进行设置，虽然这样的设置可能与您的审美不符，
+%   杭电理工类毕业论文写作规范 进行设置，虽然这样的设置可能与您的审美不符，
 %   但是这是为了保证论文的格式符合学校的要求.
-%   \item \ulem{杭电理工类毕业论文写作规范} 中要求
-%   \ulem*{参考文献书写格式应符合GB7714-1987}，但目前
-%   \ulem{GB7714-2015 为学术界通用格式，在已有新标准情况下旧标准理应废止使用}.
+%   \item 杭电理工类毕业论文写作规范中要求
+%   参考文献书写格式应符合GB7714-1987，但目前
+%   GB7714-2015 为学术界通用格式，在已有新标准情况下旧标准理应废止使用.
 %   所以本模板默认使用 \pkg{gbt7714} 宏包.
 % \end{enumerate}
 %
@@ -341,23 +339,17 @@ Copyright and License
 %
 % \subsection{手动安装}
 %
-% 本模板已上传至 \href{https://ctan.org/pkg/hduthesis}{CTAN}、
+% 本模板采用 \pkg{l3build} 脚本进行打包. 用户可在
+% \href{https://ctan.org/pkg/hduthesis}{CTAN}、
 % \href{https://github.com/myhsia/hduthesis/}{GitHub} 和
-% \href{https://gitee.com/myhsia/hduthesis}{Gitee} 平台，
-% 可直接 Clone 项目. 解压后在当前目录运行
+% \href{https://gitee.com/myhsia/hduthesis}{Gitee} 平台
+% Clone 项目\footnote{CTAN 平台并未提供 \file{build.lua} 脚本}.
+% 解压后在当前目录运行
 % \begin{quote}
-%   "latex hduthesis.ins"
+%   "l3build ctan"\\
+%   "l3build install"
 % \end{quote}
-% 会生成如 \ref{1.2.2} 所示的 Runtime 文件. 接下来获取安装路径，在命令行输入
-% \begin{quote}
-%   "kpsewhich -var-value TEXMFLOCAL"
-% \end{quote}
-% 后会输出一个路径. 将上一步生成的文件复制到该路径下 |./tex/latex/hduthesis/|
-% 文件夹中，然后在命令行执行
-% \begin{quote}
-%   "sudo mktexlsr"
-% \end{quote}
-% 刷新 \hologo{TeX} 发行版的文件名数据库后即完成安装.
+% 会生成如 \ref{1.2.2} 所示的 Runtime 文件，并将模板安装至本地.
 %
 % \section{全局选项}
 %
@@ -365,7 +357,7 @@ Copyright and License
 %
 % 使用本模板编译本科、硕士学位论文时遇到``编译受阻''报错，请认真阅读封面的用户协议.
 % 添加选项 |agreed| 后（即|\documentclass [ agreed ] { hduthesis }|），
-% 方可顺利编译，\ulem{并默认您已同意用户协议}.
+% 方可顺利编译，并默认您已同意用户协议.
 %
 % 使用 \hologo{hduthesis} 编译信纸、试题解析和本用户手册时，无需 |agreed| 选项.
 %
@@ -394,7 +386,7 @@ Copyright and License
 %   \begin{syntax}
 %     \cs{DocInfo}\marg{key values}
 %   \end{syntax}
-%   此命令接收键值，用于设置文档信息，\ulem{需在导言区中执行}.
+%   此命令接收键值，用于设置文档信息，需在导言区中执行.
 %   \begin{keyval}
 %     \item [\key{title}] \val{list} 用于设置论文题目与封面大标题.
 %     \item [\key{department}] \val{string} 用于设置学院.
@@ -470,10 +462,10 @@ Copyright and License
 %   日期的输入格式为 |yyyy-mm-dd|.
 % \end{function}
 %
-% 对于本科生，只需要签署 ``\ulem*{诚信承诺}'' 一组签名；
-% 对于研究生，则需要签署 ``\ulem*{原创性声明}''、
-% ``\ulem*{（作者同意）学位论文使用授权声明}'' 和
-% ``\ulem*{（导师同意）学位论文使用授权声明}'' 三组签名. 使用用例如下
+% 对于本科生，只需要签署 ``诚信承诺'' 一组签名；
+% 对于研究生，则需要签署 ``原创性声明''、
+% ``（作者同意）学位论文使用授权声明'' 和
+% ``（导师同意）学位论文使用授权声明'' 三组签名. 使用用例如下
 %
 % \begin{verbatim}
 %   \begin{document} ... \maketitle
@@ -618,13 +610,13 @@ Copyright and License
 %
 % \subsection{Beamer 主题}
 %
-% 本模板中存在独立的 Beamer 主题 "hdu"，用于生成杭州电子科技大学风格的 Beamer 幻灯片.
-% 由于本主题为杭州电子科技大学专属，所以该主题暂不开放更改主题色杭电蓝和Logo.
+% 本模板中存在独立的 Beamer 主题 |hdu|，用于生成杭州电子科技大学风格的 Beamer 幻灯片.
+% 该主题目前暂不开放更改主题色杭电蓝和 Logo.
 %
-% 加载模块 \pkg{beamer}，并进行文档信息设置，即以 "hdu" 为主题制作Beamer.
+% 加载模块 \pkg{beamer} 后可通过 \cs{hduset} 接口设置文档信息.
 % 此模块无需 \pkg{agreed} 选项.
 % \begin{quote}
-%   |\documentclass [ mode = beamer ] { hduthesis }|
+%   "\documentclass [ mode = beamer ] { hduthesis }"
 % \end{quote}
 % 与学士 / 硕士学位论文文档信息设置类似，使用 \cs{DocInfo} 命令，
 % 对信件主题、发件人、邮箱、日期和水印进行设置. 此时 \cs{DocInfo} 命令接受键
@@ -643,28 +635,29 @@ Copyright and License
 %     }
 % \end{verbatim}
 %
-% \subsection{HDU 试卷解析模板}
+% \subsection{HDU 试卷解析模块}
 %
+% 加载模块 \pkg{exam} 后即可使用此模块，
+% 此模块无需 \pkg{agreed} 选项.
 % \begin{quote}
-%   此模块开发中，敬请期待 |:-)|\quad [预计完成时间：14/03/2025].
-%   \vspace{\baselineskip}
-%   \begin{flushright}
-%     |@myhsia|\\
-%     Physics Department\\
-%     Hangzhou Dianzi University
-%   \end{flushright}
+%   "\documentclass [ mode = exam ] { hduthesis }"
 % \end{quote}
+% 此模块中预制了 \env{problem} 和 \env{solution} 环境.
 %
 % \includepdf [ pages = -, nup = 2x4, frame, linktodoc,
 %               scale = 0.96, delta = .25in .2in
-%             ] {hduthesis-beamer.pdf}
+%             ] {hduthesis-beamer}
+%
+% \includepdf [ pages = -, nup = 1x2, angle = -90, frame,
+%               linktodoc, scale = 0.96, delta = 0in .25in
+%             ] {hduthesis-exam}
 %
 % \begin{thebibliography}{99}
 %   \bibitem{interface3} The \hologo{LaTeX} Project.
-%   The \hologo{LaTeX3} Interfaces. CTAN: Released 2025-01-18.
-%   \bibitem{ctex} \url{CTEX.ORG}. C\hologo{TeX} 宏集. 2022/07/14 v2.5.10.
+%   The \hologo{LaTeX3} Interfaces. CTAN: Released 2025-03-10.
+%   \bibitem{ctex} \url{CTEX.ORG}. C\hologo{TeX} 宏集. 2022-07-14 v2.5.10.
 %   \bibitem{clsguide} \hologo{LaTeX} Project Team.
-%   LaTeX for package and class authors current version
+%   \hologo{LaTeX} for package and class authors current version
 %   \copyright{} Copyright 2023 -- 2024. 2024-09-15.
 %   \bibitem{source2e} B. Johannes, C. David, J. Alan, L. Leslie L, M. Frank,
 %   R. Chris, and S. Rainer.
@@ -672,7 +665,7 @@ Copyright and License
 %   2024-11-01 Patch level 2.
 %   \bibitem{l3styleguide} The \hologo{LaTeX} Project.
 %   The \hologo{LaTeX3} kernel: style guide for code authors.
-%   CTAN: Released 2025-01-18.
+%   CTAN: Released 2025-03-10.
 %   \bibitem{packages} Package \pkg{etoolbox}, \pkg{geometry}, \pkg{tocloft},
 %   \pkg{fancyhdr}, etc.
 %   \bibitem{hdubachelor} 杭州电子科技大学教务处.
@@ -738,8 +731,8 @@ Copyright and License
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\def \hduthesis@date {2025-03-07}
-\def \hduthesis@version {1.0.0}
+\def \hduthesis@date {2025-03-21}
+\def \hduthesis@version {1.1.0}
 \def \hduthesis@maintainerid {myhsia}
 %    \end{macrocode}
 %
@@ -863,11 +856,11 @@ Copyright and License
 \bool_lazy_all:nT
   {
     { !\str_if_empty_p:N \g_@@_mode_tl }
-    { !\str_if_eq_p:ee { \g_@@_mode_tl } { thesis } }
-    { !\str_if_eq_p:ee { \g_@@_mode_tl } { beamer } }
+    { !\str_if_eq_p:ee { \g_@@_mode_tl } { thesis }     }
+    { !\str_if_eq_p:ee { \g_@@_mode_tl } { beamer }     }
     { !\str_if_eq_p:ee { \g_@@_mode_tl } { stationery } }
-    { !\str_if_eq_p:ee { \g_@@_mode_tl } { exam } }
-    { !\str_if_eq_p:ee { \g_@@_mode_tl } { l3doc } }
+    { !\str_if_eq_p:ee { \g_@@_mode_tl } { exam }       }
+    { !\str_if_eq_p:ee { \g_@@_mode_tl } { l3doc }      }
   }
   { \@@_msg_warning:nx { unknown mode } { \g_@@_mode_tl } }
 %    \end{macrocode}
@@ -877,7 +870,7 @@ Copyright and License
   {
     \PassOptionsToClass { aspectratio = 2013 } { beamer }
     \exp_args:NNV
-    \LoadClass [ \g_@@_base_options_clist ] { beamer }
+      \LoadClass [ \g_@@_base_options_clist ] { beamer }
     \usetheme{hdu}
     \endinput
   }
@@ -888,7 +881,7 @@ Copyright and License
   {
     \PassOptionsToClass { 12pt } { letter }
     \exp_args:NNV
-    \LoadClass [ \g_@@_base_options_clist ] { letter }
+      \LoadClass [ \g_@@_base_options_clist ] { letter }
     \@@_load_module:n { stationery }
     \endinput
   }
@@ -898,7 +891,7 @@ Copyright and License
 \str_if_eq:eeT { \g_@@_mode_tl } { exam }
   {
     \exp_args:NNV
-    \LoadClass [ \g_@@_base_options_clist ] { article }
+      \LoadClass [ \g_@@_base_options_clist ] { article }
     \@@_load_module:n { exam }
     \endinput
   }
@@ -910,7 +903,7 @@ Copyright and License
     \PassOptionsToClass { 11pt, letterpaper, kernel } { l3doc }
     \RequirePackage{minted}
     \exp_args:NNV
-    \LoadClass [ \g_@@_base_options_clist ] { l3doc }
+      \LoadClass [ \g_@@_base_options_clist ] { l3doc }
     \@@_load_module:n { l3doc }
     \endinput
   }
@@ -920,17 +913,17 @@ Copyright and License
 %    \begin{macrocode}
 \bool_lazy_any:nT
   {
-    { \str_if_eq_p:ee { \g_@@_mode_tl } { thesis } }
-    { !\str_if_eq_p:ee { \g_@@_mode_tl } { beamer } }
+    {  \str_if_eq_p:ee { \g_@@_mode_tl } { thesis }     }
+    { !\str_if_eq_p:ee { \g_@@_mode_tl } { beamer }     }
     { !\str_if_eq_p:ee { \g_@@_mode_tl } { stationery } }
-    { !\str_if_eq_p:ee { \g_@@_mode_tl } { exam } }
-    { !\str_if_eq_p:ee { \g_@@_mode_tl } { l3doc } }
+    { !\str_if_eq_p:ee { \g_@@_mode_tl } { exam }       }
+    { !\str_if_eq_p:ee { \g_@@_mode_tl } { l3doc }      }
   }
   {
     \PassOptionsToClass { a4paper, zihao = -4 } { ctexrep }
     \PassOptionsToPackage { quiet, no-math } { xeCJK }
     \exp_args:NNV
-    \LoadClass [ \g_@@_base_options_clist ] { ctexrep }
+      \LoadClass [ \g_@@_base_options_clist ] { ctexrep }
     \bool_if:NTF \g_@@_agreement_bool
       {
         \RequirePackage{hyperref}
@@ -974,22 +967,32 @@ Copyright and License
 %
 %    \begin{macrocode}
 \RequirePackage { circuitikz, pgfplots, listings, hologo,
-                  lipsum, zhlipsum, booktabs, multicol }
+                  lipsum,     zhlipsum, booktabs, multicol }
 \pgfplotsset { compat = newest }
-\hologoFontSetup { general = \sffamily }
 %    \end{macrocode}
 %   插图相对路径设置.
 %    \begin{macrocode}
 \graphicspath
   {
-    {./figure/}{./figures/}{./image/}{./images/}
-    {./graphics/}{./graphic/}{./pictures/}{./picture/}
+    {./figure/}   {./figures/} {./image/}    {./images/}
+    {./graphics/} {./graphic/} {./pictures/} {./picture/}
   }
 %    \end{macrocode}
-%   设置行距倍数和缩进.
+%   设置行距倍数、缩进和公式前后间距.
 %    \begin{macrocode}
 \linespread{1.39}
-\dim_set:Nn \parindent { 2\ccwd }
+\AtBeginDocument
+  {
+    \dim_set:Nn \abovedisplayskip {3pt}
+    \dim_set:Nn \belowdisplayskip {3pt}
+    \dim_set:Nn \parindent { 2\ccwd }
+  }
+%    \end{macrocode}
+%   公式排版必要宏包加载，行间公式前后间距设置.
+%    \begin{macrocode}
+\RequirePackage { mathtools,  amssymb, cancel,  fixdif,
+                  derivative, siunitx, physics2, bm }
+\usephysicsmodule { ab, braket, op.legacy, qtext.legacy }
 %    \end{macrocode}
 % \begin{macro}{\@@_font_semilarge:, \@@_font_semiLarge:}
 %   两种新字体尺寸设置.
@@ -1000,45 +1003,34 @@ Copyright and License
   { \@setfontsize \@@_font_semiLarge:{16.5}{17.5} }
 %    \end{macrocode}
 % \end{macro}
-%   设置西文字体
+%   设置西文字体、数学字体、中文字体.
 %    \begin{macrocode}
-\setmainfont{texgyretermes}
-  [
-    Extension      = .otf,         UprightFont = *-regular,
-    BoldFont       = *-bold,       ItalicFont  = *-italic,
-    BoldItalicFont = *-bolditalic
-  ]
-\setsansfont{texgyreheros}
-  [
-    Extension      = .otf,         BoldItalicFont = *-bolditalic,
-    UprightFont    = *-regular,    BoldFont       = *-bold,
-    ItalicFont     = *-italic,     Scale          = .9
-  ]
-%    \end{macrocode}
-%   公式排版必要宏包加载，行间公式前后间距设置.
-%    \begin{macrocode}
-\RequirePackage { mathtools,  amssymb, cancel,  fixdif,
-                  derivative, siunitx, physics2 }
-\usephysicsmodule { ab, braket, op.legacy, bm-um.legacy }
-\RequirePackage
-  [ warnings-off = { mathtools-colon, mathtools-overbracket }
-  ] {unicode-math}
-\AtBeginDocument
+\sys_if_engine_xetex:T
   {
-    \dim_set:Nn \abovedisplayskip {3pt}
-    \dim_set:Nn \belowdisplayskip {3pt}
+    \RequirePackage
+      [ warnings-off = { mathtools-colon, mathtools-overbracket }
+      ] {unicode-math}
+    \setmainfont{texgyretermes}
+      [
+        Extension      = .otf,         UprightFont = *-regular,
+        BoldFont       = *-bold,       ItalicFont  = *-italic,
+        BoldItalicFont = *-bolditalic
+      ]
+    \setsansfont{texgyreheros}
+      [
+        Extension      = .otf,         BoldItalicFont = *-bolditalic,
+        UprightFont    = *-regular,    BoldFont       = *-bold,
+        ItalicFont     = *-italic,     Scale          = .9
+      ]
+    \tl_if_empty:NF \g__hdu_math_font
+      { \setmathfont { \g__hdu_math_font } }
+    \tl_if_empty:NF \g__hdu_main_CJK_font
+      { \exp_last_unbraced:No \setCJKmainfont \g__hdu_main_CJK_font }
+    \tl_if_empty:NF \g__hdu_sans_CJK_font
+      { \exp_last_unbraced:No \setCJKsansfont \g__hdu_sans_CJK_font }
+    \tl_if_empty:NF \g__hdu_mono_CJK_font
+      { \exp_last_unbraced:No \setCJKmonofont \g__hdu_mono_CJK_font }
   }
-%    \end{macrocode}
-%   数学字体、中文字体设置.
-%    \begin{macrocode}
-\tl_if_empty:NF \g_@@_math_font
-  { \setmathfont { \g_@@_math_font } }
-\tl_if_empty:NF \g_@@_main_CJK_font
-  { \exp_last_unbraced:No \setCJKmainfont \g_@@_main_CJK_font }
-\tl_if_empty:NF \g_@@_sans_CJK_font
-  { \exp_last_unbraced:No \setCJKsansfont \g_@@_sans_CJK_font }
-\tl_if_empty:NF \g_@@_mono_CJK_font
-  { \exp_last_unbraced:No \setCJKmonofont \g_@@_mono_CJK_font }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -1078,7 +1070,7 @@ Copyright and License
 \crefformat{table}{表#2#1#3}
 %    \end{macrocode}
 % \begin{macro}{\@@_cover_spread_box:nn, \@@_cover_center_box:nn}
-%   分散对齐盒子与\ulem{下划线居中对齐盒子}.
+%   分散对齐盒子与 下划线居中对齐盒子.
 %   \footnote{由 \url{tex.stackexchange.com} 论坛上 |@egreg| 提供接口.}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cover_spread_box:nn #1#2
@@ -1901,7 +1893,7 @@ Copyright and License
 %</pg.config>
 %    \end{macrocode}
 %
-% \subsection{\module{hdu} Beamer 主题的实现}
+% \subsection{Beamer 主题的实现}
 %
 %    \begin{macrocode}
 %<*beamer>
@@ -1943,7 +1935,7 @@ Copyright and License
     author     .tl_set:N = \l_@@_set_author_tl,
     date       .tl_set:N = \l_@@_set_date_tl,
     supervisor .tl_set:N = \l_@@_set_supervisor_tl,
-    bibsource  .tl_set:N = \l_@@_set_reference_tl,
+    bibsource  .tl_set:N = \l_@@_set_bibsource_tl,
   }
 %    \end{macrocode}
 % \end{variable}
@@ -2089,8 +2081,7 @@ Copyright and License
       {
         \filldraw [hduRed, ultra~thick, line~cap = butt]
           (0,0) --++
-          (\paperwidth * \fp_eval:n
-            {(\insertpagenumber-1)/(\insertdocumentendpage-1)},0);
+          (\insertpagenumber\paperwidth/\insertdocumentendpage,0);
         \draw [white, very~thick, yshift = -.6pt] (0,0) --++
           (\paperwidth,0);
       }
@@ -2113,13 +2104,7 @@ Copyright and License
           \filldraw
             [ line~cap = round, hdu!60, ultra~thick, path~fading = west
             ] (0,0) --++
-              (2\linewidth *
-                \fp_eval:n
-                  {
-                    (\insertframenumber - 1)/
-                    (\inserttotalframenumber - 1)
-                  }/3,0
-              );
+              (\insertpagenumber\linewidth/\insertdocumentendpage * 2/3,0);
         }
       \vfill
     \end{frame}
@@ -2134,7 +2119,7 @@ Copyright and License
 \renewcommand* \qedsymbol {$\color{gray}\blacksquare$}
 \usephysicsmodule{ ab, braket, op.legacy }
 %    \end{macrocode}
-%   浮动题设置.
+%   浮动体设置.
 %    \begin{macrocode}
 % Figure settings
 \RequirePackage [ labelsep = period, figurename = \textsc{Fig},
@@ -2327,6 +2312,113 @@ Copyright and License
 %
 %    \begin{macrocode}
 \@@_provide_module:n {exam}
+\keys_define:nn { hduthesis / exam }
+  {
+    watermark .tl_set:N = \l_@@_exam_watermark_tl,
+  }
+\NewDocumentCommand \hdutexset {m} { \keys_set:nn { hduthesis / exam } {#1} }
+\DeclareHookRule { shipout / background }
+  { hduthesis / exam } { before } { pgfrcs }
+\AddToHook { shipout / background } [ hduthesis / exam ]
+  {
+    \tl_if_empty:NF \l_@@_exam_watermark_tl
+      {
+        \tikz [ remember~picture, overlay ]
+          \node [ opacity = .2 ] at (current~page)
+            {
+              \includegraphics [ width = \linewidth ]
+                { \l_@@_exam_watermark_tl }
+            };
+      }
+  }
+\RequirePackage
+  {
+    geometry, mathtools, array, bm, esint, keytheorems,
+    siunitx, fixdif, derivative, physics2, tasks, anyfontsize
+  }
+\RequirePackage[inline]{enumitem}
+\RequirePackage{fontawesome5, fancyqr, circuitikz}
+\hook_gput_code:nnn { cmd/faIcon/before } { . }
+  {
+    \group_begin:
+    \fontsize { \fp_eval:n { .9 * \f@size } } { 0 } \selectfont
+  }
+\hook_gput_code:nnn { cmd/faIcon/after } { . } { \group_end: }
+\geometry{margin = 1in}
+\RequirePackage[svgnames]{xcolor}
+\newkeytheorem{note}
+  [ style = remark, numbered = false,
+    name = \color{DarkRed}\sffamily \faIcon{info-circle}~Tip. ]
+\newkeytheorem{problem}
+  [ style = definition,
+    name = \color{DarkGreen}\sffamily \faIcon{pen-square}~Problem ]
+\newkeytheorem{solution}
+  [ style = definition, numbered = false,
+    name = \color{MidnightBlue}\sffamily \faIcon{check-square}~Solution ]
+\usephysicsmodule{ab, op.legacy}
+\settasks { label = \sffamily\Alph*., item-indent = 2.5em, label-offset = .5pt }
+\newcommand \true {\addtocounter{task}{1}\faIcon{check-circle}}
+\def \@result#1 {\underline{~#1~}}
+\def \s@result {\textsf{【\qquad 】}}
+\DeclareRobustCommand \result {\@ifstar\s@result\@result}
+\keys_define:nn { textfig }
+  {
+    ratio      .tl_set:N    = \l_@@_textfig_ratio_tl,
+      ratio    .initial:n   = 7 \c_colon_str 2,
+    position   .tl_set:N    = \l_@@_textfig_position_tl,
+      position .initial:n   = c,
+    unknown    .code:n      = \tl_if_novalue:nF {#1}
+      { \tl_set_eq:NN \l_@@_textfig_position_tl \l_keys_key_tl }
+  }
+\NewDocumentEnvironment{textfig}{ O{} }
+  {
+    \group_begin:
+    \keys_set:nn { textfig } {#1}
+    \seq_set_split:Nee \l_@@_textfig_ratio_seq { \c_colon_str }
+      { \l_@@_textfig_ratio_tl }
+    \noindent
+    \minipage [ \l_@@_textfig_position_tl ]
+      {
+        \fp_eval:n
+          {
+            .96*\seq_item:Nn \l_@@_textfig_ratio_seq {1}/
+              (
+                \seq_item:Nn \l_@@_textfig_ratio_seq {1} + 
+                \seq_item:Nn \l_@@_textfig_ratio_seq {2}
+              )
+          }\dimexpr \linewidth
+      }
+  }
+  {
+    \endminipage
+    \vspace{4.5pt plus 1.5pt minus 1.5pt} \par
+    \group_end:
+  }
+\NewDocumentCommand \textfigsplit {}
+  {
+    \endminipage
+    \hspace{.02\linewidth}
+    \minipage [ \l_@@_textfig_position_tl ]
+      {
+        \fp_eval:n
+          {
+            .96*\seq_item:Nn \l_@@_textfig_ratio_seq {2}/
+              (
+                \seq_item:Nn \l_@@_textfig_ratio_seq {1} + 
+                \seq_item:Nn \l_@@_textfig_ratio_seq {2}
+              )
+          }\dimexpr \linewidth
+      }
+  }
+
+\makeatother \ExplSyntaxOff
+\usetikzlibrary{ fadings, patterns, arrows, decorations.markings }
+\tikzset
+  {
+    > = stealth',
+    every picture/.append style =
+      { line join = round, line cap = round, thick }
+  }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -2350,10 +2442,6 @@ Copyright and License
 \RenewDocumentCommand \cls {m}
   { \href{https://ctan.org/pkg/#1}{\textsf{#1}} }
 \NewDocumentCommand \mailto {m} { \texttt{<\href{mailto:#1}{#1}>} }
-\def \@ulem#1
-  { \CJKsout*[thickness = 2.5ex, format = \color{blue!15}]{#1} }
-\def \s@ulem#1 { \CJKunderwave*{#1} }
-\DeclareRobustCommand \ulem { \@ifstar \s@ulem \@ulem }
 \def \@key #1
   { \textcolor{red}{\textbf{\texttt{#1}}} ~ \normalfont \texttt{=} ~ }
 \def \s@key #1{\textcolor{red}{\textbf{\texttt{#1}}}}
@@ -2386,9 +2474,9 @@ Copyright and License
 \usetikzlibrary{calc}
 \ExplSyntaxOn
 \RequirePackage [ pass ] { geometry }
-\RequirePackage { enumitem,   dirtree,  tabularx, tasks,
-                  xeCJKfntef, pdfpages, setspace, subcaption }
-\graphicspath { {./example/} }
+\RequirePackage { enumitem, dirtree,  tabularx,
+                  tasks,    pdfpages, subcaption }
+\graphicspath { {} }
 \RequirePackage[fontset = fandol]{ctex} \linespread{1.4}
 \dim_set:Nn \parindent {0pt}
 \hook_gput_code:nnn { env/function/before } { . }
@@ -2448,9 +2536,9 @@ Copyright and License
     \thispagestyle{empty}
   }
 \hook_gput_code:nnn { cmd/tableofcontents/before } { . }
-  { \clearpage \spacing{1.15} }
-\hook_gput_code:nnn { cmd/tableofcontents/after } { . }
-  { \endtitlepage \endspacing \restoregeometry }
+  { \clearpage }
+\hook_gput_code:nnn { cmd/tableofcontents/after  } { . }
+  { \endtitlepage \restoregeometry }
 \date{
   Released ~ \hduthesis@date \quad \texttt{v\hduthesis@version}
   \footnote{

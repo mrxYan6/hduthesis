@@ -1,3 +1,7 @@
 /source
+/build
+*.tds.zip
+*.zip
+*.tar.gz
 .DS_Store
-latexmkrc
+.xample
