@@ -20,12 +20,23 @@ uploadconfig = {
   author       = "Mingyu Xia",
   uploader     = "Mingyu Xia",
   email        = "myhsia@outlook.com",
-  summary      = "",
+  summary      = [[
+    LaTeX class for bachelor and MPhil theses in
+    Hangzhou Dianzi University
+  ]],
   description  = [[
+    This package provides a LaTeX template for graduation theses in
+    Hangzhou Dianzi University.
+    It supports the formatting of bachelor and MPhil degree theses.
   ]],
   license      = "lppl1.3c",  
   ctanPath     = "/macros/latex/contrib/" .. module,
   announcement = [[
+    Version 1.1.0 released
+    - Fixed the lost of graphics files when installing by tlmgr.
+    - Updated the l3build workflow.
+    - Finished the hdu-exam module.
+    - Fixed the support of ApLaTeX compiler.
   ]],
   home         = "https://github.com/myhsia/" .. module,
   bugtracker   = "https://github.com/myhsia/" .. module .. "/issues",
