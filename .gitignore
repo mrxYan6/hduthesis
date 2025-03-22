@@ -6,3 +6,4 @@
 *.curlopt
 .DS_Store
 .xample
+/resource

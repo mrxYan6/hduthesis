@@ -21,11 +21,12 @@
 %             and the derived files hduthesis.cls,                      *
 %                                   hdu-<module>.code.tex,              *
 %                                   beamerthemehdu.sty,                 *
-%                                   hdulogo.pdf,                        *
-%                                   hdutitle.pdf,                       *
-%                                   hdubadge.pdf,                       *
-%                                   hdumotto.pdf,                       *
+%                                   hdu-logo.pdf,                       *
+%                                   hdu-title.pdf,                      *
+%                                   hdu-badge.pdf,                      *
+%                                   hdu-motto.pdf,                      *
 %                                   hduthesis.pdf,                      *
+%                                   hdu-graphics.pdf,                   *
 %                               and README.md.                          *
 % -----------------------------------------------------------------------
 %
@@ -226,8 +227,8 @@ Copyright and License
 % \end{tasks}
 %
 % 以上模块包含在 \file{hdu-}\meta{module name}\file{.code.tex} 文件中.
-% 同时，\file{./tex/} 文件夹中还包含了 \file{hdulogo.pdf}、\file{hdutitle.pdf}、
-% \file{hdumotto.pdf}、\file{hdubadge.pdf}，分别提供杭州电子科技大学校徽、校名、
+% 同时，\file{./tex/} 文件夹中还包含了 \file{hdu-logo.pdf}、\file{hdu-title.pdf}、
+% \file{hdu-motto.pdf}、\file{hdu-badge.pdf}，分别提供杭州电子科技大学校徽、校名、
 % 校训和校牌的矢量图.
 % \footnote{如果你通过 |tlmgr| 安装了此模板，在其他文档类中也可以调用这些素材.}
 %
@@ -258,11 +259,11 @@ Copyright and License
 %   {^^A
 %     .1 ./hduthesis.tar.gz/.
 %     .2 hduthesis.dtx, *.pdf.
-%     .2 hdu-graphics.dtx.
+%     .2 hdu-graphics.dtx, *.pdf.
 %     .2 hduthesis.ins.
 %     .2 example/.
 %     .3 hduthesis-bachelor.tex, *.pdf.
-%     .3 hduthesis-m phil.tex, *.pdf.
+%     .3 hduthesis-mphil.tex, *.pdf.
 %     .3 reference.bib.
 %     .3 cha/.
 %     .3 figures/.
@@ -280,10 +281,10 @@ Copyright and License
 %     .3 beamerthemehdu.sty.
 %     .3 README.md.
 %     .2 hdu-graphics.dtx/.
-%     .3 hdulogo.pdf.
-%     .3 hdutitle.pdf.
-%     .3 hdubadge.pdf.
-%     .3 hdumotto.pdf.
+%     .3 hdu-logo.pdf.
+%     .3 hdu-title.pdf.
+%     .3 hdu-badge.pdf.
+%     .3 hdu-motto.pdf.
 %   }
 % \end{minipage}
 %
@@ -359,7 +360,7 @@ Copyright and License
 % 添加选项 |agreed| 后（即|\documentclass [ agreed ] { hduthesis }|），
 % 方可顺利编译，并默认您已同意用户协议.
 %
-% 使用 \hologo{hduthesis} 编译信纸、试题解析和本用户手册时，无需 |agreed| 选项.
+% 使用 \hologo{hduthesis} 编译信纸、试题解析、Beamer 和本用户手册时，无需 |agreed| 选项.
 %
 % \subsection{字体设置}
 %
@@ -731,8 +732,8 @@ Copyright and License
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\def \hduthesis@date {2025-03-21}
-\def \hduthesis@version {1.1.0}
+\def \hduthesis@date {2025-03-23}
+\def \hduthesis@version {1.1.1}
 \def \hduthesis@maintainerid {myhsia}
 %    \end{macrocode}
 %
@@ -1326,7 +1327,7 @@ Copyright and License
   {
     \begin{center}
       \vspace*{14\p@}
-      \includegraphics[ width = .64\linewidth ]{hdutitle}
+      \includegraphics[ width = .64\linewidth ]{hdu-title}
       \par \vspace*{36\p@}
       \scalebox{2.75}
       {
@@ -1584,7 +1585,7 @@ Copyright and License
   {
     \begin{center}
       \null
-      \includegraphics[height = 2.35cm]{hdutitle}
+      \includegraphics[height = 2.35cm]{hdu-title}
       \par \vspace*{40\p@}
         {
           \LARGE
@@ -1999,20 +2000,20 @@ Copyright and License
       \node [ inner~sep = 0pt, outer~sep = auto,
               opacity = .1,    xshift = -2em 
             ] at (current~page.east)
-       { \includegraphics [ height = .75\paperheight ] { hdulogo.pdf } };
+       { \includegraphics [ height = .75\paperheight ] { hdu-logo.pdf } };
   }
 \titlegraphic
   {
     \tikz [ remember~picture, overlay ]
       \node [ below~right, yshift = -1em ] at (current~page.north~west) 
-        { \includegraphics [ width = 2\textwidth/7 ]{ hdubadge.pdf } };
+        { \includegraphics [ width = 2\textwidth/7 ]{ hdu-badge.pdf } };
   }
 %    \end{macrocode}
 %   |Beamer| 原生主题调用.
 %    \begin{macrocode}
 \useoutertheme{infolines}
 \useinnertheme[shadow = false]{rounded}
-\definecolor{hdu}{HTML}{214395}
+\definecolor{hdu}{HTML}{163479}
 \definecolor{hduRed}{HTML}{BF6236}
 \usecolortheme[named = hdu]{structure}
 \setbeamercolor*{palette~primary}
@@ -2094,7 +2095,7 @@ Copyright and License
     \begin{frame}
       \tikz [ remember~picture, overlay ]
         \node [ below~right, yshift = -1em ] at (current~page.north~west) 
-          { \includegraphics [ width = 2\textwidth/7 ]{ hdubadge.pdf } };
+          { \includegraphics [ width = 2\textwidth/7 ]{ hdu-badge.pdf } };
       \vfill
       \usebeamerfont{title} \insertsectionhead \par
       \tikz
@@ -2200,7 +2201,7 @@ Copyright and License
 \linespread{1.25}
 \RequirePackage [ skip = \baselineskip ] { parskip }
 \renewcommand* \familydefault { \sfdefault }
-\definecolor{hdu}{HTML}{214395}
+\definecolor{hdu}{HTML}{163479}
 
 \renewcommand* \headrulewidth {2pt}
 \renewcommand* \footrulewidth {2pt}
@@ -2210,7 +2211,7 @@ Copyright and License
   { {}~
     \minipage{.6\linewidth}
       \medskip \leavevmode \lower -.111in
-      \hbox { \includegraphics [ height = .75in ] {hdubadge} }
+      \hbox { \includegraphics [ height = .75in ] {hdu-badge} }
     \endminipage \medskip \hfill
     \minipage{.36\linewidth}
       \medskip \vbox
@@ -2275,7 +2276,7 @@ Copyright and License
       {
         \tikz [ remember~picture, overlay ]
           \node [ opacity = .2 ] at (current~page)
-            { \includegraphics [ width = .4\linewidth ] {hdulogo} };
+            { \includegraphics [ width = .4\linewidth ] {hdu-logo} };
       }
   }
 %    \end{macrocode}
@@ -2524,12 +2525,12 @@ Copyright and License
           \node [ opacity = .8 ] 
             {
               \includegraphics [ width = .14\paperwidth ]
-                { hdumotto.pdf }
+                { hdu-motto.pdf }
             };
           \node [ opacity = .3 ]
             {
               \includegraphics [ width = .21\paperwidth ]
-                { hdulogo.pdf }
+                { hdu-logo.pdf }
             };
       }
     \end{center}

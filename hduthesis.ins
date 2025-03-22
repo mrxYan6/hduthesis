@@ -21,11 +21,12 @@ File: hduthesis.ins
             and the derived files hduthesis.cls,                      *
                                   hdu-<module>.code.tex,              *
                                   beamerthemehdu.sty,                 *
-                                  hdulogo.pdf,                        *
-                                  hdutitle.pdf,                       *
-                                  hdubadge.pdf,                       *
-                                  hdumotto.pdf,                       *
+                                  hdu-logo.pdf,                       *
+                                  hdu-title.pdf,                      *
+                                  hdu-badge.pdf,                      *
+                                  hdu-motto.pdf,                      *
                                   hduthesis.pdf,                      *
+                                  hdu-graphics.pdf,                   *
                               and README.md.                          *
 -----------------------------------------------------------------------
 
@@ -64,11 +65,12 @@ File: hduthesis.ins
             and the derived files hduthesis.cls,                      *
                                   hdu-<module>.code.tex,              *
                                   beamerthemehdu.sty,                 *
-                                  hdulogo.pdf,                        *
-                                  hdutitle.pdf,                       *
-                                  hdubadge.pdf,                       *
-                                  hdumotto.pdf,                       *
+                                  hdu-logo.pdf,                       *
+                                  hdu-title.pdf,                      *
+                                  hdu-badge.pdf,                      *
+                                  hdu-motto.pdf,                      *
                                   hduthesis.pdf,                      *
+                                  hdu-graphics.pdf,                   *
                               and README.md.                          *
 -----------------------------------------------------------------------
 \endpostamble
@@ -77,22 +79,22 @@ File: hduthesis.ins
 
 \generate{
   \usedir{tex/latex/hduthesis}
-    \file{hduthesis.cls}             {\from{hduthesis.dtx}{class}}
-    \file{hdu-typeset.code.tex}      {\from{hduthesis.dtx}{typeset}}
-    \file{hdu-layout.code.tex}       {\from{hduthesis.dtx}{layout}}
-    \file{hdu-bc.config.code.tex}    {\from{hduthesis.dtx}{bc.config}}
-    \file{hdu-pg.config.code.tex}    {\from{hduthesis.dtx}{pg.config}}
-    \file{hdu-stationery.code.tex}   {\from{hduthesis.dtx}{stationery}}
-    \file{hdu-exam.code.tex}         {\from{hduthesis.dtx}{exam}}
-    \file{hdu-l3doc.code.tex}        {\from{hduthesis.dtx}{l3doc}}
-    \file{beamerthemehdu.sty}        {\from{hduthesis.dtx}{beamer}}
+    \file{hduthesis.cls}             {\from{hduthesis.dtx}{class}       }
+    \file{hdu-typeset.code.tex}      {\from{hduthesis.dtx}{typeset}     }
+    \file{hdu-layout.code.tex}       {\from{hduthesis.dtx}{layout}      }
+    \file{hdu-bc.config.code.tex}    {\from{hduthesis.dtx}{bc.config}   }
+    \file{hdu-pg.config.code.tex}    {\from{hduthesis.dtx}{pg.config}   }
+    \file{hdu-stationery.code.tex}   {\from{hduthesis.dtx}{stationery}  }
+    \file{hdu-exam.code.tex}         {\from{hduthesis.dtx}{exam}        }
+    \file{hdu-l3doc.code.tex}        {\from{hduthesis.dtx}{l3doc}       }
+    \file{beamerthemehdu.sty}        {\from{hduthesis.dtx}{beamer}      }
   \nopreamble \nopostamble \let \MetaPrefix \perCent
-    \file{hdulogo.pdf}               {\from{hdu-graphics.dtx}{hdulogo}}
-    \file{hdutitle.pdf}              {\from{hdu-graphics.dtx}{hdutitle}}
-    \file{hdubadge.pdf}              {\from{hdu-graphics.dtx}{hdubadge}}
-    \file{hdumotto.pdf}              {\from{hdu-graphics.dtx}{hdumotto}}
+    \file{hdu-logo.pdf}              {\from{hdu-graphics.dtx}{hdu-logo} }
+    \file{hdu-title.pdf}             {\from{hdu-graphics.dtx}{hdu-title}}
+    \file{hdu-badge.pdf}             {\from{hdu-graphics.dtx}{hdu-badge}}
+    \file{hdu-motto.pdf}             {\from{hdu-graphics.dtx}{hdu-motto}}
   \usedir{doc/latex/hduthesis}
-    \file{README.md}                 {\from{hduthesis.dtx}{readme}}
+    \file{README.md}                 {\from{hduthesis.dtx}{readme}      }
 }
 
 \endbatchfile
