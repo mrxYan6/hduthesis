@@ -3,11 +3,11 @@
 --]==========================]--
 
 module             = "hduthesis"
-ctanzip            = module
 packtdszip         = true
+sourcefiledir      = "code"
 typesetexe         = "xelatex"
 installfiles       = {"*.sty", "*.cls", "*.code.tex", "*.pdf"}
-typesetdemofiles   = {"./example/*.tex"}
+typesetdemofiles   = {"./doc/example/*.tex"}
 specialtypesetting = specialtypesetting or {}
 specialtypesetting["hduthesis-stationery.tex"] =
   {cmd = "pdflatex --shell-escape -interaction=nonstopmode"}
