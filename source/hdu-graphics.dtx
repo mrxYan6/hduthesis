@@ -3502,11 +3502,13 @@ startxref
 %
 % \maketitle
 %
-% \begin{center}
-%   此存根文件可确保在运行 |l3build| 时 |hdu-graphics.dtx| 能够顺利展开.
+% \begin{documentation}
 %
-%   This is a stub file to allow extraction of |hdu-graphics.dtx|
-%   when running |l3build|.
+% \begin{center}
+%   此存根文件可确保在运行 |l3build| 时 |hdu-graphics.dtx| 能够展开生成 |.pdf| 素材.
+%
+%   This is a stub file to allow extraction of |hdu-graphics.dtx| to generate
+%   |.pdf| resources when running |l3build|.
 % \end{center}
 %
 % \begin{figure}[htbp]
@@ -3554,3 +3556,46 @@ startxref
 %     }
 %   \end{minipage}
 % \end{figure}
+%
+% \end{documentation}
+%
+% \begin{implementation}
+%
+% \section{原始素材预处理}
+%
+% 前往 \href{https://www.hdu.edu.cn/666/list.htm}{校情纵览/校标规范}
+% 资源后，使用 Inkscape（或 Adobe Illustrator，Affinity Design，Vectornator 等）
+% 分别将校徽、校名、校牌、校训导出 |.pdf| 格式. 校牌可能需要手动将校徽、校名手动拼接.
+%
+% \section{PDF 文件处理}
+%
+% 由于发行版 \hologo{TeX} Live 2024 及更早版本中的 |dvipdfmx| 程序在以指定透明度插入经
+% Inkscape 导出的 |.pdf| 文件时存在透明度失效问题\footnote
+% {感谢 \hologo{TeX} 专家 \href{https://www.zhihu.com/people/li-a-ling}
+% {|@李阿玲|} 修复了这一 Bug (GitHub Commit: |fdefe61|).}，
+% 所以先使用 |Ghostscript| 程序修复 |.pdf| 文件
+% \begin{quote}
+%   "gs -o" \meta{input file}".pdf -sDEVICE=pdfwrite" \meta{output file}".pdf"
+% \end{quote}
+% 此时若使用 Text Editor 查看导出的 |.pdf| 文件，会发现里面存在许多无法识别的字符.
+% 这时需要使用 mutool 工具对 |.pdf| 文件的内容流进行清理、消毒、压缩和数据转换. 命令如下
+% \begin{quote}
+%   "mutool clean -a -z -gggg" \meta{input file}".pdf" \meta{output file}".pdf"
+% \end{quote}
+%
+% \section{素材打包}
+%
+% 由于每个 |.pdf| 文件均存在以 |%| 开头的代码
+% \begin{verbatim}
+%      %PDF-1.7
+%      %µ¶
+%      %%EOF
+% \end{verbatim}
+% 需更改 Docstrip 处理 |%| 行为：|%| 改为 |%%|，|%%| 改为 |%%%|，
+% 并在 \file{hduthesis.ins} 添加
+% \begin{quote}
+%   "\let \MetaPrefix \perCent"
+% \end{quote}
+% 现可将处理结束后得到 ASCII 编码的 |.pdf| 文件，打包至 \file{hdu-graphics.dtx}.
+%
+% \end{implementation}

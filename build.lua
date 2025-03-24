@@ -2,12 +2,55 @@
    L3BUILD FILE FOR HDUTHESIS
 --]==========================]--
 
+function copyctan()
+  local pkgdir = ctandir .. "/" .. ctanpkg
+  mkdir(pkgdir)
+
+  -- Handle pre-formed sources: do two passes to avoid any cleandir() issues
+  for _,dest in pairs(tdsdirs) do
+    mkdir(pkgdir .. "/" .. dest)
+  end
+  for src,dest in pairs(tdsdirs) do
+    cp("*",src,pkgdir .. "/" .. dest)
+  end
+
+  -- Now deal with the one-at-a-time files
+  local function copyfiles(files,source)
+    if source == currentdir or flatten then
+      for _,filetype in pairs(files) do
+        cp(filetype,source,pkgdir)
+      end
+    else
+      for _,filetype in pairs(files) do
+        for _,p in ipairs(tree(source,filetype)) do
+          local path = dirname(p.src)
+          local ctantarget = pkgdir .. "/"
+            .. source .. "/" .. path
+          mkdir(ctantarget)
+          cp(p.src,source,ctantarget)
+        end
+      end
+    end
+  end
+  for _,tab in pairs(
+    {bibfiles,demofiles,docfiles,pdffiles,scriptmanfiles,typesetlist}) do
+    copyfiles(tab,docfiledir)
+  end
+  copyfiles(sourcefiles,sourcefiledir)
+  for _,file in pairs(textfiles) do
+    cp(file, textfiledir, pkgdir)
+  end
+
+end
+
 module             = "hduthesis"
 packtdszip         = true
-sourcefiledir      = "code"
+flatten            = false
+flattentds         = false
+sourcefiledir      = "source"
 typesetexe         = "xelatex"
 installfiles       = {"*.sty", "*.cls", "*.code.tex", "*.pdf"}
-typesetdemofiles   = {"./doc/example/*.tex"}
+typesetdemofiles   = {"./example/*.tex"}
 specialtypesetting = specialtypesetting or {}
 specialtypesetting["hduthesis-stationery.tex"] =
   {cmd = "pdflatex --shell-escape -interaction=nonstopmode"}

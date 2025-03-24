@@ -1,9 +1,8 @@
-/source
 /build
+/resource
 *.tds.zip
 *.zip
 *.tar.gz
 *.curlopt
 .DS_Store
 .xample
-/resource
